@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muster — Ecosystem Activation</title>
+    <meta name="description" content="Muster finds the builders who will actually ship on your platform. Zero friction. Zero BD calls until signal is confirmed.">
+    <meta property="og:title" content="Muster — Ecosystem Activation">
+    <meta property="og:description" content="Muster finds the builders who will actually ship on your platform. Zero friction. Zero BD calls until signal is confirmed.">
+    <meta property="og:url" content="https://muster.so">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Muster — Ecosystem Activation">
+    <meta name="twitter:description" content="Muster finds the builders who will actually ship on your platform. Zero friction. Zero BD calls until signal is confirmed.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231C1A18'/><text x='6' y='24' font-size='20' fill='%23A34E2A' font-family='serif' font-style='italic'>m</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        base: 'var(--bg)',
+                        content: 'var(--fg)',
+                        accent: 'var(--accent)',
+                        surface: 'var(--surface)',
+                        line: 'var(--borderline)',
+                        muted: 'var(--muted)',
+                    },
+                    fontFamily: {
+                        display: ['Cormorant', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'soft': '0 20px 40px -10px var(--shadow-color), 0 1px 3px var(--shadow-sm)',
+                        'card': '0 10px 30px -5px var(--shadow-color)',
+                    },
+                    animation: {
+                        'marquee': 'marquee 25s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --bg: #F2EFEA;
+                --fg: #1C1A18;
+                --accent: #A34E2A;
+                --surface: #EBE7E0;
+                --borderline: rgba(28, 26, 24, 0.12);
+                --muted: rgba(28, 26, 24, 0.65);
+                --shadow-color: rgba(28, 26, 24, 0.08);
+                --shadow-sm: rgba(28, 26, 24, 0.04);
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --bg: #0A0A09;
+                    --fg: #E5E0D8;
+                    --accent: #D94829;
+                    --surface: #141412;
+                    --borderline: rgba(229, 224, 216, 0.15);
+                    --muted: rgba(229, 224, 216, 0.5);
+                    --shadow-color: rgba(0, 0, 0, 0.8);
+                    --shadow-sm: rgba(0, 0, 0, 0.4);
+                }
+            }
+
+            body.agent-mode {
+                --bg: #0A0A09;
+                --fg: #E5E0D8;
+                --accent: #D94829;
+                --surface: #141412;
+                --borderline: rgba(229, 224, 216, 0.15);
+                --muted: rgba(229, 224, 216, 0.5);
+                --shadow-color: rgba(0, 0, 0, 0.8);
+                --shadow-sm: rgba(0, 0, 0, 0.4);
+            }
+
+            body {
+                @apply bg-base text-content font-display antialiased transition-colors duration-500 selection:bg-accent selection:text-base;
+                overflow-x: hidden;
+            }
+
+            h1, h2, h3, h4 {
+                @apply tracking-tighter leading-[0.85] font-normal;
+            }
+        }
+
+        @layer utilities {
+            .bg-noise {
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            }
+            .text-outline {
+                -webkit-text-stroke: 1.5px #E5E0D8;
+                -webkit-text-fill-color: transparent;
+            }
+            .agent-mode .text-outline {
+                -webkit-text-stroke: 1px var(--fg);
+            }
+        }
+
+
+        .shipping-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+            width: 100%;
+        }
+        .ship-cell {
+            aspect-ratio: 1;
+            background-color: var(--borderline);
+            border-radius: 1px;
+            animation: shipPulse 3s infinite alternate ease-in-out;
+            opacity: 0.3;
+        }
+        @keyframes shipPulse {
+            0% { background-color: var(--borderline); opacity: 0.3; }
+            100% { background-color: var(--accent); opacity: 0.8; }
+        }
+
+        .ship-cell:nth-child(2n) { animation-delay: 0.5s; }
+        .ship-cell:nth-child(3n) { animation-delay: 1.2s; }
+        .ship-cell:nth-child(5n) { animation-delay: 0.2s; }
+        .ship-cell:nth-child(7n) { animation-delay: 2.1s; }
+        .ship-cell:nth-child(11n) { animation-delay: 1.7s; animation-duration: 2s; }
+        .ship-cell:nth-child(13n) { animation-delay: 0.8s; background-color: var(--accent); opacity: 0.9; animation: none;}
+
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--borderline); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+    </style>
+</head>
+<body class="relative min-h-screen">
+
+
+    <div class="fixed inset-0 bg-noise pointer-events-none z-50 mix-blend-multiply opacity-100"></div>
+
+
+    <nav class="fixed top-0 left-0 right-0 z-40 p-6 flex justify-between items-center mix-blend-difference text-[#E5E0D8]">
+        <div class="text-3xl tracking-tight lowercase">muster</div>
+        <div class="hidden md:flex gap-8 font-mono text-xs uppercase tracking-widest">
+            <a href="#how" class="hover:italic hover:opacity-70 transition-all">How it works</a>
+            <a href="#engine" class="hover:italic hover:opacity-70 transition-all">Engine</a>
+            <a href="#pricing" class="hover:italic hover:opacity-70 transition-all">Partners</a>
+        </div>
+        <div>
+            <a href="/diagnose" class="font-mono text-xs uppercase tracking-widest border border-current px-4 py-2 hover:bg-white hover:text-black transition-colors">Run Diagnostic</a>
+        </div>
+    </nav>
+
+
+    <div class="fixed bottom-0 left-0 right-0 z-30 pointer-events-none overflow-hidden border-t border-line bg-base/80 backdrop-blur-sm py-3">
+        <div class="flex whitespace-nowrap animate-marquee font-mono text-[11px] uppercase tracking-widest" style="color: rgba(28,26,24,0.7); width: max-content;">
+            <span class="flex items-center gap-8 px-8">
+                <span>SYS.SCAN <span class="text-accent">→</span> First API call detected [milestone unlocked]</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+                <span>SYS.SIGNAL <span class="text-accent">→</span> 8 builders match IBP // outreach queued</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+                <span>SYS.SCAN <span class="text-accent">→</span> First integration shipped [north star moving]</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+                <span>SYS.SIGNAL <span class="text-accent">→</span> API +340% // 21d silent — signal flagged</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+                <span>SYS.NETWORK <span class="text-accent">→</span> Referral chain growing [anchor introduced to BD]</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+                <span>SYS.SCAN <span class="text-accent">→</span> Lookalike match found in adjacent ecosystem</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+            </span>
+            <span class="flex items-center gap-8 px-8">
+                <span>SYS.SCAN <span class="text-accent">→</span> First API call detected [milestone unlocked]</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+                <span>SYS.SIGNAL <span class="text-accent">→</span> 8 builders match IBP // outreach queued</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+                <span>SYS.SCAN <span class="text-accent">→</span> First integration shipped [north star moving]</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+                <span>SYS.SIGNAL <span class="text-accent">→</span> API +340% // 21d silent — signal flagged</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+                <span>SYS.NETWORK <span class="text-accent">→</span> Referral chain growing [anchor introduced to BD]</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+                <span>SYS.SCAN <span class="text-accent">→</span> Lookalike match found in adjacent ecosystem</span>
+                <span style="color: rgba(28,26,24,0.3)">•</span>
+            </span>
+        </div>
+    </div>
+
+
+    <div class="fixed top-20 left-1/2 -translate-x-1/2 z-40 flex gap-4 font-display text-xl tracking-tight">
+        <button id="btn-human" class="text-content opacity-100 italic underline underline-offset-4 transition-all hover:opacity-100">humans</button>
+        <button id="btn-agent" class="text-content opacity-30 transition-all hover:opacity-100">agents</button>
+    </div>
+
+
+    <main id="view-human" class="w-full transition-opacity duration-500">
+
+
+        <section class="min-h-[95vh] pt-32 px-6 md:px-12 relative flex flex-col justify-center">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+
+                <div class="lg:col-span-8 z-10">
+                    <h1 class="text-[4rem] sm:text-[5rem] lg:text-[8rem] xl:text-[10rem] leading-[0.8] -ml-2">
+                        Activate<br>
+                        <i class="text-accent pr-4">your</i> Eco-<br>
+                        system.
+                    </h1>
+                    <p class="font-mono text-xs md:text-sm uppercase tracking-widest mt-12 max-w-md text-muted leading-relaxed">
+                        The operating system for developer ecosystems. Find who's shipping, engage more like them, and compound the network.
+                    </p>
+                </div>
+
+
+                <div class="lg:col-span-4 relative mt-12 lg:mt-0 perspective-1000">
+                    <div class="w-full max-w-sm mx-auto bg-surface border border-line p-6 shadow-soft -rotate-2 hover:rotate-0 transition-transform duration-700 ease-out relative z-20">
+
+                        <div class="flex justify-between items-end border-b border-content pb-2 mb-4 font-mono text-[10px] uppercase tracking-wider">
+                            <span class="opacity-60">SYS.PIPELINE</span>
+                            <span class="font-bold text-accent">[ACTIVE_BUILDERS]</span>
+                        </div>
+
+                        <div class="space-y-3 mb-6">
+
+                            <div class="flex justify-between items-center font-mono text-[11px] border-b border-line border-dashed pb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                                    <span>USR_0x9A...F3C</span>
+                                </div>
+                                <span class="font-bold">SCORE: 0.94</span>
+                            </div>
+
+                            <div class="flex justify-between items-center font-mono text-[11px] border-b border-line border-dashed pb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-content"></div>
+                                    <span>@sona_agent</span>
+                                </div>
+                                <span class="font-bold">SCORE: 0.88</span>
+                            </div>
+
+                            <div class="flex justify-between items-center font-mono text-[11px] border-b border-line border-dashed pb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-content"></div>
+                                    <span>@meshwork_labs</span>
+                                </div>
+                                <span class="font-bold">SCORE: 0.81</span>
+                            </div>
+                        </div>
+
+
+                        <div class="mb-6">
+                            <div class="font-mono text-[9px] uppercase tracking-widest text-muted mb-2">Deploy Activity // 7D</div>
+                            <div class="shipping-grid">
+
+                                <div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div>
+                                <div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div>
+                                <div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div>
+                                <div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-content text-xl italic text-accent lowercase">
+                            Signal detected.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section class="border-y border-line w-full">
+            <div class="grid grid-cols-1 md:grid-cols-2">
+
+
+                <div class="p-8 md:p-16 lg:p-24 border-b md:border-b-0 md:border-r border-line relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div class="relative z-10">
+                        <h2 class="text-5xl md:text-6xl lg:text-7xl mb-8">Find the<br><i class="text-accent">Signal.</i></h2>
+                        <p class="font-mono text-xs uppercase tracking-widest leading-relaxed max-w-sm mb-12">
+                            No tweets. No Discord. API calls up 340%.
+                            No one on your team knows they exist.
+                        </p>
+
+
+                        <div class="bg-surface border border-accent/30 p-4 inline-block shadow-card relative">
+                            <div class="absolute -top-2 -right-2 w-4 h-4 bg-accent rounded-full animate-ping"></div>
+                            <div class="absolute -top-2 -right-2 w-4 h-4 bg-accent rounded-full"></div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-base font-mono text-[10px]">!</div>
+                                <div class="font-mono text-[10px]">
+                                    <div class="uppercase tracking-wider font-bold">@StealthBuild_x</div>
+                                    <div class="text-[8px] mt-1 bg-accent text-base px-1 inline-block">SIGNAL_FOUND // API +340%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="p-8 md:p-16 lg:p-24 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-surface opacity-0 group-hover:opacity-50 transition-opacity duration-700"></div>
+                    <div class="relative z-10">
+                        <h2 class="text-5xl md:text-6xl lg:text-7xl mb-8">The<br>Graveyard.</h2>
+                        <p class="font-mono text-xs uppercase tracking-widest leading-relaxed max-w-sm mb-12">
+                            10,000 signups. 5,000 Discord members. $50k in grants.
+                            Who's actually shipping?
+                        </p>
+
+
+                        <div class="bg-base border border-line p-4 inline-block shadow-sm">
+                            <div class="flex items-center gap-4 mb-3 opacity-50 grayscale">
+                                <div class="w-8 h-8 rounded-full bg-content flex items-center justify-center text-base font-mono text-[10px]">0x1</div>
+                                <div class="font-mono text-[10px]">
+                                    <div class="uppercase tracking-wider">Signup #9042</div>
+                                    <div class="text-[8px] mt-1 border border-content px-1 inline-block">STATUS: IDLE</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 opacity-30 grayscale">
+                                <div class="w-8 h-8 rounded-full bg-content flex items-center justify-center text-base font-mono text-[10px]">0x2</div>
+                                <div class="font-mono text-[10px]">
+                                    <div class="uppercase tracking-wider">Signup #9043</div>
+                                    <div class="text-[8px] mt-1 border border-content px-1 inline-block">STATUS: IDLE</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="how" class="py-32 px-6 md:px-12 max-w-7xl mx-auto">
+            <h2 class="text-4xl md:text-5xl mb-24 text-center">How it works.</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
+
+                <div class="relative border-t border-line pt-6">
+                    <div class="text-7xl md:text-8xl italic text-accent leading-none mb-6 absolute -top-12 md:-top-16 left-0 bg-base pr-4">01</div>
+                    <h3 class="text-2xl mb-4 mt-8">Discover</h3>
+                    <p class="font-mono text-xs uppercase tracking-widest leading-relaxed text-muted">
+                        Profile every builder in your community. Tagged by stage, scored against your Ideal Builder Profile.
+                    </p>
+                </div>
+
+                <div class="relative border-t border-line pt-6">
+                    <div class="text-7xl md:text-8xl italic text-accent leading-none mb-6 absolute -top-12 md:-top-16 left-0 bg-base pr-4">02</div>
+                    <h3 class="text-2xl mb-4 mt-8">Engage</h3>
+                    <p class="font-mono text-xs uppercase tracking-widest leading-relaxed text-muted">
+                        Find builders who match your IBP but haven't found you yet. Draft outreach, send invites, track responses.
+                    </p>
+                </div>
+
+                <div class="relative border-t border-line pt-6">
+                    <div class="text-7xl md:text-8xl italic text-accent leading-none mb-6 absolute -top-12 md:-top-16 left-0 bg-base pr-4">03</div>
+                    <h3 class="text-2xl mb-4 mt-8">Compound</h3>
+                    <p class="font-mono text-xs uppercase tracking-widest leading-relaxed text-muted">
+                        Every milestone, referral, and anchor relationship tied to your north star. Builders who activate in one ecosystem get discovered by others.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="engine" class="py-32 bg-surface px-6 md:px-12 border-y border-line">
+            <div class="max-w-7xl mx-auto">
+
+                <div class="mb-20 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
+                    <div>
+                        <h2 class="text-5xl md:text-7xl mb-4">The engine.</h2>
+                        <p class="font-mono text-xs uppercase tracking-widest text-muted max-w-lg leading-relaxed">Your data sources go in. Muster scores every builder against your north star. You see who to act on.</p>
+                    </div>
+                    <div class="font-mono text-[10px] text-muted uppercase tracking-widest shrink-0">Private signals stay private.</div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-line">
+
+                    <div class="bg-surface p-8">
+                        <div class="font-mono text-[9px] uppercase tracking-widest text-muted mb-8">Data in</div>
+                        <div class="space-y-1 mb-6">
+                            <div class="font-mono text-[8px] uppercase tracking-widest text-muted mb-3">Public</div>
+                            <div class="flex justify-between items-center border border-line bg-base px-3 py-2.5">
+                                <span class="font-mono text-[10px]">GitHub</span>
+                                <span class="font-mono text-[8px] text-muted">commits · PRs · stars</span>
+                            </div>
+                            <div class="flex justify-between items-center border border-line bg-base px-3 py-2.5">
+                                <span class="font-mono text-[10px]">X / Twitter</span>
+                                <span class="font-mono text-[8px] text-muted">posts · engagement</span>
+                            </div>
+                            <div class="flex justify-between items-center border border-line bg-base px-3 py-2.5">
+                                <span class="font-mono text-[10px]">LinkedIn</span>
+                                <span class="font-mono text-[8px] text-muted">background · role</span>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="font-mono text-[8px] uppercase tracking-widest text-muted mb-3">Private</div>
+                            <div class="flex justify-between items-center border border-accent/30 bg-accent/5 px-3 py-2.5">
+                                <span class="font-mono text-[10px]">API metrics</span>
+                                <span class="font-mono text-[8px] text-muted">volume · activations</span>
+                            </div>
+                            <div class="flex justify-between items-center border border-accent/30 bg-accent/5 px-3 py-2.5">
+                                <span class="font-mono text-[10px]">Discord</span>
+                                <span class="font-mono text-[8px] text-muted">frequency · sentiment</span>
+                            </div>
+                            <div class="flex justify-between items-center border border-accent/30 bg-accent/5 px-3 py-2.5">
+                                <span class="font-mono text-[10px]">Dev signups</span>
+                                <span class="font-mono text-[8px] text-muted">step · date · source</span>
+                            </div>
+                            <div class="flex justify-between items-center border border-accent/30 bg-accent/5 px-3 py-2.5">
+                                <span class="font-mono text-[10px]">Events</span>
+                                <span class="font-mono text-[8px] text-muted">invited · attended · shipped</span>
+                            </div>
+                            <div class="flex justify-between items-center border border-accent/30 bg-accent/5 px-3 py-2.5">
+                                <span class="font-mono text-[10px]">Internal CRM</span>
+                                <span class="font-mono text-[8px] text-muted">notes · relationship</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface p-8 flex flex-col">
+                        <div class="font-mono text-[9px] uppercase tracking-widest text-muted mb-8">Muster brain</div>
+                        <div class="flex-1 flex flex-col gap-3">
+                            <div class="border border-line bg-base p-4 flex-1">
+                                <div class="font-mono text-[9px] uppercase tracking-widest text-accent mb-2">Scoring</div>
+                                <p class="font-mono text-[9px] text-muted leading-relaxed">Every developer scored against your criteria — who's actually building, who's noise, who's worth your time.</p>
+                            </div>
+                            <div class="border border-line bg-base p-4 flex-1">
+                                <div class="font-mono text-[9px] uppercase tracking-widest text-accent mb-2">Staging</div>
+                                <p class="font-mono text-[9px] text-muted leading-relaxed">Automatically sorts your pipeline into who to activate now, who to watch, and who to re-engage.</p>
+                            </div>
+                            <div class="border border-line bg-base p-4 flex-1">
+                                <div class="font-mono text-[9px] uppercase tracking-widest text-accent mb-2">Lookalike Discovery</div>
+                                <p class="font-mono text-[9px] text-muted leading-relaxed">Finds developers on GitHub, X, and LinkedIn who look like your best builders but haven't found you yet.</p>
+                            </div>
+                            <div class="border border-line bg-base p-4 flex-1">
+                                <div class="font-mono text-[9px] uppercase tracking-widest text-accent mb-2">Outreach Drafting</div>
+                                <p class="font-mono text-[9px] text-muted leading-relaxed">Writes the first message, referencing their actual work. You review before anything goes out.</p>
+                            </div>
+                            <div class="border border-line bg-base p-4 flex-1">
+                                <div class="font-mono text-[9px] uppercase tracking-widest text-accent mb-2">Weekly Digest</div>
+                                <p class="font-mono text-[9px] text-muted leading-relaxed">What moved your north star, who's at risk of going dark, what needs your attention this week.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface p-8">
+                        <div class="font-mono text-[9px] uppercase tracking-widest text-muted mb-8">What you see</div>
+                        <div class="space-y-2">
+                            <div class="border border-line bg-base p-4 hover:border-accent/40 transition-colors">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="font-mono text-[10px] uppercase tracking-widest">Pipeline</span>
+                                    <span class="font-mono text-[8px] text-accent">→</span>
+                                </div>
+                                <p class="font-mono text-[8px] text-muted leading-relaxed">Every developer ranked by fit, with current stage, momentum, and last activity.</p>
+                            </div>
+                            <div class="border border-line bg-base p-4 hover:border-accent/40 transition-colors">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="font-mono text-[10px] uppercase tracking-widest">Lookalikes</span>
+                                    <span class="font-mono text-[8px] text-accent">→</span>
+                                </div>
+                                <p class="font-mono text-[8px] text-muted leading-relaxed">New developers to reach, with the specific reason they're a match.</p>
+                            </div>
+                            <div class="border border-line bg-base p-4 hover:border-accent/40 transition-colors">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="font-mono text-[10px] uppercase tracking-widest">Outreach Queue</span>
+                                    <span class="font-mono text-[8px] text-accent">→</span>
+                                </div>
+                                <p class="font-mono text-[8px] text-muted leading-relaxed">Drafted messages ready to review. Edit, send, or skip.</p>
+                            </div>
+                            <div class="border border-line bg-base p-4 hover:border-accent/40 transition-colors">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="font-mono text-[10px] uppercase tracking-widest">Integrations</span>
+                                    <span class="font-mono text-[8px] text-accent">→</span>
+                                </div>
+                                <p class="font-mono text-[8px] text-muted leading-relaxed">Partner pipeline tracked by status — live, in progress, early conversations.</p>
+                            </div>
+                            <div class="border border-line bg-base p-4 hover:border-accent/40 transition-colors">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="font-mono text-[10px] uppercase tracking-widest">Ambassadors</span>
+                                    <span class="font-mono text-[8px] text-accent">→</span>
+                                </div>
+                                <p class="font-mono text-[8px] text-muted leading-relaxed">Who's running events and bringing new developers in. Referral chains tracked.</p>
+                            </div>
+                            <div class="border border-line bg-base p-4 hover:border-accent/40 transition-colors">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <span class="font-mono text-[10px] uppercase tracking-widest">Digest</span>
+                                    <span class="font-mono text-[8px] text-accent">→</span>
+                                </div>
+                                <p class="font-mono text-[8px] text-muted leading-relaxed">What moved last week, who needs attention, what's next. Compiled every Monday.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+
+        <section class="py-32 px-6 md:px-12 border-b border-line">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-8 mb-16">
+                    <div>
+                        <h2 class="text-5xl md:text-7xl mb-4">The ecosystem,<br><i class="text-accent">live.</i></h2>
+                        <p class="font-mono text-xs uppercase tracking-widest text-muted max-w-md leading-relaxed">Every node is a builder. Every line is a referral chain or integration. Anchors pull the network forward. Signals sit at the edge, waiting.</p>
+                    </div>
+                    <div class="font-mono text-[9px] uppercase tracking-widest text-muted space-y-2 shrink-0">
+                        <div class="flex items-center gap-3"><span class="w-3 h-3 rounded-full bg-accent inline-block"></span>Anchor — shipping + multiplying</div>
+                        <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 rounded-full bg-content inline-block opacity-60"></span>Builder — active in production</div>
+                        <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-content inline-block opacity-25"></span>Signal — quietly growing</div>
+                        <div class="flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-content inline-block opacity-10"></span>Ghost — went dark</div>
+                    </div>
+                </div>
+                <div class="w-full border border-line relative overflow-hidden" style="height:420px;background:var(--surface)">
+                    <canvas id="eco-graph" style="width:100%;height:100%;display:block;"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <script>
+        (function() {
+            const canvas = document.getElementById('eco-graph');
+            function resize() {
+                canvas.width = canvas.offsetWidth * devicePixelRatio;
+                canvas.height = canvas.offsetHeight * devicePixelRatio;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const NODES = [
+                { stage:'anchor',  label:'@0xbuilder', rx:0.38, ry:0.40 },
+                { stage:'anchor',  label:'@proto_mae',  rx:0.56, ry:0.44 },
+                { stage:'anchor',  label:'@devkaran',   rx:0.44, ry:0.62 },
+                { stage:'anchor',  label:'@helix_dev',  rx:0.28, ry:0.56 },
+                { stage:'builder', label:'@rukia',      rx:0.22, ry:0.30 },
+                { stage:'builder', label:'@meshlab',    rx:0.64, ry:0.28 },
+                { stage:'builder', label:'@luna',       rx:0.70, ry:0.57 },
+                { stage:'builder', label:'@wei_dev',    rx:0.50, ry:0.74 },
+                { stage:'builder', label:'@chaincraft', rx:0.32, ry:0.72 },
+                { stage:'builder', label:'@loopdev',    rx:0.18, ry:0.52 },
+                { stage:'builder', label:'@agentbox',   rx:0.74, ry:0.36 },
+                { stage:'builder', label:'@buildquiet', rx:0.58, ry:0.70 },
+                { stage:'signal',  label:'',            rx:0.10, ry:0.36 },
+                { stage:'signal',  label:'',            rx:0.13, ry:0.64 },
+                { stage:'signal',  label:'',            rx:0.80, ry:0.24 },
+                { stage:'signal',  label:'',            rx:0.84, ry:0.62 },
+                { stage:'signal',  label:'',            rx:0.47, ry:0.16 },
+                { stage:'signal',  label:'',            rx:0.62, ry:0.84 },
+                { stage:'signal',  label:'',            rx:0.20, ry:0.18 },
+                { stage:'ghost',   label:'',            rx:0.06, ry:0.20 },
+                { stage:'ghost',   label:'',            rx:0.90, ry:0.76 },
+                { stage:'ghost',   label:'',            rx:0.04, ry:0.78 },
+                { stage:'ghost',   label:'',            rx:0.92, ry:0.16 },
+                { stage:'ghost',   label:'',            rx:0.44, ry:0.92 },
+            ];
+
+            const EDGES = [
+                [0,4],[0,5],[0,12],[0,16],
+                [1,6],[1,7],[1,10],[1,13],
+                [2,8],[2,11],[2,17],
+                [3,9],[3,14],[3,18],
+                [0,1],[1,2],[2,3],
+                [5,14],[6,15],[8,13],[9,12],
+                [4,19],[6,20],[9,21],[10,22],[7,23],
+            ];
+
+            let t = 0;
+            function draw() {
+                const ctx = canvas.getContext('2d');
+                const w = canvas.width, h = canvas.height, dpr = devicePixelRatio;
+                const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const fg = dark ? 'rgba(229,224,216,' : 'rgba(28,26,24,';
+                const aR = dark ? '217,72,41' : '163,78,42';
+                const pad = 64 * dpr;
+
+                ctx.clearRect(0, 0, w, h);
+
+                const nx = n => pad + n.rx * (w - pad * 2);
+                const ny = n => pad + n.ry * (h - pad * 2);
+
+                EDGES.forEach(([ai, bi]) => {
+                    const a = NODES[ai], b = NODES[bi];
+                    const anchor = a.stage === 'anchor' && b.stage === 'anchor';
+                    ctx.beginPath();
+                    ctx.moveTo(nx(a), ny(a));
+                    ctx.lineTo(nx(b), ny(b));
+                    ctx.strokeStyle = `${fg}${anchor ? 0.15 : 0.07})`;
+                    ctx.lineWidth = (anchor ? 1.5 : 0.8) * dpr;
+                    ctx.setLineDash(anchor ? [] : [4 * dpr, 7 * dpr]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    if (a.stage !== 'ghost' && b.stage !== 'ghost') {
+                        const p = (t * 0.35 + ai * 0.29 + bi * 0.13) % 1;
+                        const px = nx(a) + (nx(b) - nx(a)) * p;
+                        const py = ny(a) + (ny(b) - ny(a)) * p;
+                        ctx.beginPath();
+                        ctx.arc(px, py, 1.5 * dpr, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(${aR},0.55)`;
+                        ctx.fill();
+                    }
+                });
+
+                NODES.forEach((node, i) => {
+                    const x = nx(node), y = ny(node);
+                    const pulse = Math.sin(t * 1.4 + i * 0.65) * 0.5 + 0.5;
+
+                    if (node.stage === 'anchor') {
+                        const r = 7 * dpr;
+                        const grd = ctx.createRadialGradient(x, y, 0, x, y, r * 3.5);
+                        grd.addColorStop(0, `rgba(${aR},${0.12 + pulse * 0.1})`);
+                        grd.addColorStop(1, `rgba(${aR},0)`);
+                        ctx.beginPath(); ctx.arc(x, y, r * 3.5, 0, Math.PI * 2);
+                        ctx.fillStyle = grd; ctx.fill();
+                        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(${aR},0.9)`; ctx.fill();
+                        if (node.label) {
+                            ctx.font = `${8.5 * dpr}px 'JetBrains Mono',monospace`;
+                            ctx.fillStyle = `${fg}0.65)`;
+                            ctx.fillText(node.label, x + r + 5 * dpr, y + 3 * dpr);
+                        }
+                    } else if (node.stage === 'builder') {
+                        const r = 4.5 * dpr;
+                        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+                        ctx.fillStyle = `${fg}0.45)`; ctx.fill();
+                        if (node.label) {
+                            ctx.font = `${7.5 * dpr}px 'JetBrains Mono',monospace`;
+                            ctx.fillStyle = `${fg}0.35)`;
+                            ctx.fillText(node.label, x + r + 3 * dpr, y + 3 * dpr);
+                        }
+                    } else if (node.stage === 'signal') {
+                        ctx.beginPath(); ctx.arc(x, y, 3 * dpr, 0, Math.PI * 2);
+                        ctx.fillStyle = `${fg}${0.18 + pulse * 0.22})`; ctx.fill();
+                    } else {
+                        ctx.beginPath(); ctx.arc(x, y, 2.5 * dpr, 0, Math.PI * 2);
+                        ctx.fillStyle = `${fg}0.07)`; ctx.fill();
+                    }
+                });
+
+                t += 0.011;
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+        </script>
+
+
+        <section class="bg-[#1C1A18] text-[#F2EFEA] py-32 px-6 md:px-12 selection:bg-surface selection:text-content">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-16">
+
+                <h2 class="text-6xl md:text-8xl lg:text-9xl leading-[0.8] max-w-xl">
+                    No vanity<br>
+                    <i>metrics.</i>
+                </h2>
+
+                <div class="w-full max-w-md">
+                    <div class="font-mono text-xs uppercase tracking-widest mb-12 opacity-50 border-b border-[#F2EFEA]/20 pb-4">We measure shipping, not shilling.</div>
+
+                    <ul class="space-y-8 font-mono tracking-wider uppercase group">
+                        <li class="flex flex-col gap-3 border-b border-[#F2EFEA]/10 pb-8 hover:text-accent transition-colors">
+                            <span class="text-xs opacity-50">01</span>
+                            <span class="text-sm">Builders Who Shipped</span>
+                            <span class="text-[10px] normal-case tracking-wide opacity-50 font-normal leading-relaxed">From signal to first milestone. Scored, tracked, attributed to your north star.</span>
+                        </li>
+                        <li class="flex flex-col gap-3 border-b border-[#F2EFEA]/10 pb-8 hover:text-accent transition-colors">
+                            <span class="text-xs opacity-50">02</span>
+                            <span class="text-sm">Still Building 30 Days Later</span>
+                            <span class="text-[10px] normal-case tracking-wide opacity-50 font-normal leading-relaxed">Retention tied to real milestones — not logins. Signals flagged before they disappear.</span>
+                        </li>
+                        <li class="flex flex-col gap-3 border-b border-[#F2EFEA]/10 pb-8 hover:text-accent transition-colors">
+                            <span class="text-xs opacity-50">03</span>
+                            <span class="text-sm">Builders Who Brought Others In</span>
+                            <span class="text-[10px] normal-case tracking-wide opacity-50 font-normal leading-relaxed">Your Anchors become your growth engine. Spotlighted, introduced to BD, co-marketed.</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="pricing" class="py-32 px-6 md:px-12 flex justify-center items-center min-h-[60vh]">
+            <div class="bg-surface border border-line p-8 md:p-16 max-w-2xl w-full text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-accent text-base font-mono text-[9px] uppercase tracking-widest px-3 py-1">Limited Capacity</div>
+
+                <h2 class="text-4xl md:text-5xl mb-6 mt-4">See your Ecosystem.</h2>
+                <p class="font-mono text-xs uppercase tracking-widest text-muted mb-12 max-w-md mx-auto leading-relaxed">
+                    Two design partner spots open. Gain absolute visibility into your developer ecosystem.
+                </p>
+
+                <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+                    <a href="https://cal.com/ericmichaelis/30min" target="_blank" class="bg-transparent text-content border border-content font-mono text-xs uppercase tracking-widest px-8 py-4 hover:bg-content hover:text-base transition-colors w-full md:w-auto text-center inline-block">
+                        Initiate Contact
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <main id="view-agent" class="w-full min-h-screen hidden pt-32 px-6 md:px-12 max-w-4xl mx-auto pb-32 transition-opacity duration-500">
+
+        <div class="border-b border-line pb-4 mb-16 flex justify-between items-end font-mono text-xs uppercase tracking-widest text-muted">
+            <span>MUSTER // REGISTRY_NODE_01</span>
+            <span class="text-accent animate-pulse">STATUS: LISTENING</span>
+        </div>
+
+        <div class="mb-16">
+            <h1 class="font-display text-5xl md:text-7xl mb-6 leading-[0.85]">You build.<br><i class="text-accent">We find you.</i></h1>
+            <p class="font-mono text-xs leading-relaxed text-muted max-w-2xl mt-8">
+                Platforms run their Ideal Builder Profile through Muster. If your work matches, you'll hear from them directly. No cold outreach. No grant applications.
+            </p>
+        </div>
+
+        <div class="mb-16">
+            <p class="font-mono text-xs uppercase tracking-widest mb-6 text-muted">CURRENT MATCHING SCHEMA:</p>
+            <div class="overflow-x-auto">
+                <table class="w-full font-mono text-xs text-left border-collapse">
+                    <thead>
+                        <tr class="text-accent border-b border-line border-dashed">
+                            <th class="py-4 font-normal w-1/3">VECTOR</th>
+                            <th class="py-4 font-normal">REQUIREMENT</th>
+                            <th class="py-4 font-normal text-right">WEIGHT</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-content/80">
+                        <tr class="border-b border-line border-dotted">
+                            <td class="py-4">SHIP_HISTORY</td>
+                            <td class="py-4">REAL PRODUCT IN PRODUCTION</td>
+                            <td class="py-4 text-right">1.00</td>
+                        </tr>
+                        <tr class="border-b border-line border-dotted">
+                            <td class="py-4">ACTIVITY_IDX</td>
+                            <td class="py-4">ACTIVE COMMITS LAST 30D</td>
+                            <td class="py-4 text-right">0.92</td>
+                        </tr>
+                        <tr class="border-b border-line border-dotted">
+                            <td class="py-4">ECOSYSTEM_FIT</td>
+                            <td class="py-4">ADJACENT BUILD HISTORY</td>
+                            <td class="py-4 text-right">0.85</td>
+                        </tr>
+                        <tr class="border-b border-line border-dotted">
+                            <td class="py-4">NOISE_RATIO</td>
+                            <td class="py-4 text-muted">LOW — BUILD &gt; BROADCAST</td>
+                            <td class="py-4 text-right">0.70</td>
+                        </tr>
+                        <tr class="border-b border-line border-dotted">
+                            <td class="py-4">WORLD_ID</td>
+                            <td class="py-4">
+                                HUMAN_VERIFIED
+                                <span class="ml-2 text-[9px] border border-accent text-accent px-1 py-0.5 uppercase tracking-wider">World AgentKit</span>
+                            </td>
+                            <td class="py-4 text-right text-accent">+0.15</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="max-w-2xl">
+            <p class="font-mono text-xs uppercase tracking-widest text-muted mb-6 leading-relaxed">Register your GitHub. If you match an active IBP, you'll hear from the ecosystem directly.</p>
+            <a href="mailto:eric@muster.so?subject=Registry%20Registration&body=GitHub%3A%20%0AWhat%20I%27ve%20built%3A%20%0AEcosystems%20I%27m%20active%20in%3A%20" class="inline-flex items-center gap-3 border border-line bg-surface font-mono text-xs uppercase tracking-widest px-8 py-4 hover:bg-content hover:text-base transition-colors">
+                <span class="text-accent animate-pulse">&gt;</span> Get in the registry
+            </a>
+        </div>
+
+        <div class="mt-8 max-w-2xl border border-line/50 bg-surface p-4 flex items-start gap-4">
+            <div class="font-mono text-[10px] text-accent mt-0.5 shrink-0">[ WORLD ]</div>
+            <div>
+                <div class="font-mono text-[10px] uppercase tracking-widest mb-1">World ID verification available via World AgentKit</div>
+                <div class="font-mono text-[10px] text-muted leading-relaxed">Verified builders rank higher in ecosystem matching. Human-confirmed profiles carry +0.15 weight across all IBP scoring — because signal is only as good as the humans behind it.</div>
+            </div>
+        </div>
+
+        <div class="mt-8 font-mono text-[10px] text-muted space-y-2 opacity-50">
+            <p>&gt; ENCRYPTED TUNNEL ACTIVE</p>
+            <p>&gt; DATA NEVER SOLD. USED ONLY FOR SCHEMA MATCHING.</p>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-line px-6 md:px-12 py-8 font-mono text-[10px] uppercase tracking-widest text-muted flex justify-between items-center">
+        <span>Ecosystem Activation · 2026</span>
+        <span>eric@muster.so</span>
+    </footer>
+
+    <script>
+        const btnHuman = document.getElementById('btn-human');
+        const btnAgent = document.getElementById('btn-agent');
+        const viewHuman = document.getElementById('view-human');
+        const viewAgent = document.getElementById('view-agent');
+        const body = document.body;
+
+        function setHumanView() {
+            body.classList.remove('agent-mode');
+
+            btnHuman.classList.add('opacity-100', 'italic', 'underline');
+            btnHuman.classList.remove('opacity-30');
+
+            btnAgent.classList.remove('opacity-100', 'italic', 'underline');
+            btnAgent.classList.add('opacity-30');
+
+            viewAgent.classList.add('hidden');
+            viewAgent.classList.remove('block');
+
+            viewHuman.classList.remove('hidden');
+            viewHuman.classList.add('block');
+
+
+            void viewHuman.offsetWidth;
+            viewHuman.style.opacity = 1;
+            viewAgent.style.opacity = 0;
+        }
+
+        function setAgentView() {
+            body.classList.add('agent-mode');
+
+            btnAgent.classList.add('opacity-100', 'italic', 'underline');
+            btnAgent.classList.remove('opacity-30');
+
+            btnHuman.classList.remove('opacity-100', 'italic', 'underline');
+            btnHuman.classList.add('opacity-30');
+
+            viewHuman.classList.add('hidden');
+            viewHuman.classList.remove('block');
+
+            viewAgent.classList.remove('hidden');
+            viewAgent.classList.add('block');
+
+
+            void viewAgent.offsetWidth;
+            viewAgent.style.opacity = 1;
+            viewHuman.style.opacity = 0;
+        }
+
+        btnHuman.addEventListener('click', setHumanView);
+        btnAgent.addEventListener('click', setAgentView);
+    </script>
+
+</body></html>

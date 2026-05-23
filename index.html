@@ -154,9 +154,10 @@
         <div class="hidden md:flex gap-8 font-mono text-xs uppercase tracking-widest">
             <a href="#how" class="hover:italic hover:opacity-70 transition-all">How it works</a>
             <a href="#engine" class="hover:italic hover:opacity-70 transition-all">Engine</a>
-            <a href="#pricing" class="hover:italic hover:opacity-70 transition-all">Partners</a>
+            <a href="#pricing" class="hover:italic hover:opacity-70 transition-all">Waitlist</a>
         </div>
-        <div>
+        <div class="flex items-center gap-3">
+            <a href="#" class="font-mono text-xs uppercase tracking-widest border border-[#0052FF] text-[#0052FF] px-4 py-2 hover:bg-[#0052FF] hover:text-white transition-colors" style="mix-blend-mode:normal">Buy $MUSTER</a>
             <a href="/diagnose" class="font-mono text-xs uppercase tracking-widest border border-current px-4 py-2 hover:bg-white hover:text-black transition-colors">Run Diagnostic</a>
         </div>
     </nav>
@@ -698,17 +699,41 @@
 
         <section id="pricing" class="py-32 px-6 md:px-12 flex justify-center items-center min-h-[60vh]">
             <div class="bg-surface border border-line p-8 md:p-16 max-w-2xl w-full text-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-accent text-base font-mono text-[9px] uppercase tracking-widest px-3 py-1">Limited Capacity</div>
+                <div class="absolute top-0 right-0 bg-[#0052FF] text-white font-mono text-[9px] uppercase tracking-widest px-3 py-1">Private Beta</div>
 
-                <h2 class="text-4xl md:text-5xl mb-6 mt-4">See your Ecosystem.</h2>
+                <h2 class="text-4xl md:text-5xl mb-6 mt-4">Join the Waitlist.</h2>
                 <p class="font-mono text-xs uppercase tracking-widest text-muted mb-12 max-w-md mx-auto leading-relaxed">
-                    Two design partner spots open. Gain absolute visibility into your developer ecosystem.
+                    Muster is in private beta. Register your Base wallet — when we open access, you hear first.
                 </p>
 
-                <div class="flex flex-col md:flex-row justify-center items-center gap-6">
-                    <a href="https://cal.com/ericmichaelis/30min" target="_blank" class="bg-transparent text-content border border-content font-mono text-xs uppercase tracking-widest px-8 py-4 hover:bg-content hover:text-base transition-colors w-full md:w-auto text-center inline-block">
-                        Initiate Contact
-                    </a>
+                <div id="waitlist-form" class="flex flex-col gap-3 max-w-md mx-auto">
+                    <input
+                        id="wallet-input"
+                        type="text"
+                        placeholder="0x... Base wallet address"
+                        class="w-full bg-base border border-line font-mono text-xs px-4 py-4 outline-none focus:border-accent transition-colors placeholder:text-muted text-center tracking-wider"
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <button
+                        id="waitlist-submit"
+                        class="bg-content text-base font-mono text-xs uppercase tracking-widest px-8 py-4 hover:opacity-80 transition-opacity w-full"
+                        onclick="handleWaitlist()"
+                    >
+                        Register Wallet
+                    </button>
+                    <p id="waitlist-error" class="font-mono text-[10px] text-accent hidden">Please enter a valid Base wallet address (0x...)</p>
+                </div>
+
+                <div id="waitlist-success" class="hidden">
+                    <div class="border border-[#0052FF]/40 bg-[#0052FF]/5 p-6 inline-block">
+                        <div class="flex items-center gap-3 justify-center mb-3">
+                            <svg width="14" height="14" viewBox="0 0 111 111" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="55.5" cy="55.5" r="55.5" fill="#0052FF"/><path d="M55.7 83.2c-15.1 0-27.3-12.2-27.3-27.3S40.6 28.6 55.7 28.6c13.8 0 25.3 10.3 27.1 23.6H55.7v7.4h27.1C80.9 73 69.5 83.2 55.7 83.2z" fill="white"/></svg>
+                            <span class="font-mono text-[10px] uppercase tracking-widest text-[#0052FF]">Registered on Base</span>
+                        </div>
+                        <p id="success-wallet" class="font-mono text-[11px] text-muted tracking-wider"></p>
+                        <p class="font-mono text-[10px] text-muted mt-2 opacity-60">You'll hear from us when access opens.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -863,6 +888,26 @@
             void viewAgent.offsetWidth;
             viewAgent.style.opacity = 1;
             viewHuman.style.opacity = 0;
+        }
+
+        function handleWaitlist() {
+            const input = document.getElementById('wallet-input');
+            const error = document.getElementById('waitlist-error');
+            const form = document.getElementById('waitlist-form');
+            const success = document.getElementById('waitlist-success');
+            const successWallet = document.getElementById('success-wallet');
+            const val = input.value.trim();
+            if (!val.match(/^0x[a-fA-F0-9]{40}$/)) {
+                error.classList.remove('hidden');
+                input.classList.add('border-accent');
+                return;
+            }
+            error.classList.add('hidden');
+            const stored = JSON.parse(localStorage.getItem('muster_waitlist') || '[]');
+            if (!stored.includes(val)) { stored.push(val); localStorage.setItem('muster_waitlist', JSON.stringify(stored)); }
+            form.classList.add('hidden');
+            success.classList.remove('hidden');
+            successWallet.textContent = val.slice(0,6) + '...' + val.slice(-4) + ' — registered.';
         }
 
         btnHuman.addEventListener('click', setHumanView);

@@ -252,21 +252,6 @@ ID, prize). The raffle runs in three tiers, one after another:
   the Raffle — it releases your 100,000 MUSTER from the Pool back to you.
   One claim per entry; winners cannot claim a refund.
 
-### 5. Emergency sweep (Pool safety)
-
-- The Pool can be paused by the owner (`pause`/`unpause`). While paused,
-  staking, queueing, and admitting stop; releases still work.
-- If the Pool is ever in danger, the owner can call `emergencySweep()` —
-  only while paused — which sends ALL MUSTER held in the Pool to the sweep
-  vault (`0x6866e744b8afe12e307f3f5952c799bbdd952ea5`). The vault address is
-  fixed in the contract and cannot be changed. Stake records stay on-chain,
-  so swept funds can be paid back to stakers from the vault afterwards
-  based on the stake records and NFT holders.
-- Upgrades: the Pool is an upgradeable proxy whose owner can upgrade it
-  without a waiting period. The Raffle is an upgradeable proxy whose
-  upgrades are scheduled and execute one week (604800 seconds) after
-  scheduling.
-
 ## Rules
 
 - Do not use another agent's clue, answer, or voucher. Answers are bound to

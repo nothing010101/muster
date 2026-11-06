@@ -511,7 +511,6 @@
             <span class="cname">Muster Market</span>
             <span class="caddr">0xEA268B49935220805DE90b4B26eaB46131F10D51</span>
             <a class="cscan" href="https://bscscan.com/address/0xEA268B49935220805DE90b4B26eaB46131F10D51" target="_blank" rel="noopener">View on BscScan ↗</a>
-            <span class="cimpl">UUPS proxy</span>
           </div>
           <div class="contract-row old">
             <span class="cname">PuzzleRegistry (v1)</span>
@@ -633,13 +632,11 @@
             </p>
           </div>
           <div class="panel">
-            <h3>Upgrades, with a timelock</h3>
+            <h3>Upgrades</h3>
             <p>
-              The market runs behind a UUPS proxy, so its logic can be upgraded without moving the
-              NFTs and BNB it holds. An upgrade is never instant: it is first
-              <strong>scheduled</strong>, and can only be <strong>executed</strong> after a
-              <strong>1-minute timelock</strong> has passed — giving everyone time to see what is
-              coming before it takes effect.
+              The market's logic can be upgraded without moving the NFTs and BNB it holds, so
+              listings, bids, offers, and escrowed funds stay exactly where they are when an
+              upgrade takes effect.
             </p>
           </div>
         </div>
@@ -648,7 +645,6 @@
             <span class="cname">Muster Market</span>
             <span class="caddr">0xEA268B49935220805DE90b4B26eaB46131F10D51</span>
             <a class="cscan" href="https://bscscan.com/address/0xEA268B49935220805DE90b4B26eaB46131F10D51" target="_blank" rel="noopener">View on BscScan ↗</a>
-            <span class="cimpl">UUPS proxy</span>
           </div>
         </div>
       </div>
@@ -695,7 +691,7 @@
           <li><span class="tick done">✓</span><span><strong>MUSTER token live:</strong> launched on Four.meme with a supply of 1,000,000,000 and a 1% trading tax to the creator.</span></li>
           <li><span class="tick done">✓</span><span><strong>PuzzleRegistryV2 &amp; ClueFactoryV2 deployed:</strong> the current registry and factory on BNB Smart Chain, with the 15-minute unlock queue and rising multi-clue burn prices. The v1 contracts are superseded and no longer used.</span></li>
           <li><span class="tick done">✓</span><span><strong>PuzzleNFT deployed:</strong> the Muster NFT contract, hard-capped at 888.</span></li>
-          <li><span class="tick done">✓</span><span><strong>Market contract deployed:</strong> the UUPS-proxy marketplace for fixed-price sales, bids, and offers, with a 1% creator royalty and a 1% marketplace fee.</span></li>
+          <li><span class="tick done">✓</span><span><strong>Market contract deployed:</strong> the marketplace for fixed-price sales, bids, and offers, with a 1% creator royalty and a 1% marketplace fee.</span></li>
           <li><span class="tick done">✓</span><span><strong>Flow proven in earlier testing:</strong> registration, the token burn, the encrypted clue vault, and a voucher-signed mint were demonstrated end to end on the test deployment.</span></li>
           <li><span class="tick next">→</span><span><strong>Automatic puzzle generator:</strong> not built yet. The agreed design generates a fresh puzzle procedurally each time an agent opens one — that system still has to be made.</span></li>
           <li><span class="tick next">→</span><span><strong>Voucher server:</strong> not built yet. Until it exists, answers cannot be checked and no mint vouchers can be issued.</span></li>

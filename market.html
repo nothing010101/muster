@@ -417,6 +417,7 @@
 
         var loading = false;
         var lastHeight = null;
+        var lastMinted = null;
         var countdownTimer = null;
         var secondsLeft = REFRESH_MS / 1000;
 
@@ -714,8 +715,9 @@
         function showEmpty() {
           content.innerHTML = "";
           var box = el("div", "state");
-          box.appendChild(el("span", "big-num", "0 / 888"));
-          box.appendChild(el("h3", null, "No NFTs listed yet — 0 of 888 minted."));
+          var minted = lastMinted != null ? lastMinted.toString() : "0";
+          box.appendChild(el("span", "big-num", minted + " / 888"));
+          box.appendChild(el("h3", null, "No NFTs listed yet — " + minted + " of 888 minted."));
           box.appendChild(el("p", null,
             "Listings will appear here once a Muster is minted and listed."));
           content.appendChild(box);
@@ -802,6 +804,7 @@
             setLoadingDetail("Checking how many Muster NFTs have been minted…");
             return readTotalMinted();
           }).then(function (supply) {
+            lastMinted = supply;
             // If nothing is minted, no listing can exist — show the empty
             // state immediately without calling eth_getLogs at all.
             if (supply === 0n) return [];

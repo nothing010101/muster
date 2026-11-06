@@ -396,17 +396,19 @@
         ];
         var rpcIndex = 0;
         var MARKET = "0xEA268B49935220805DE90b4B26eaB46131F10D51";
+        var NFT = "0x74A7C48e18aC557BDBB43C2e4d0e3820DfF3eB77";
         var DEPLOY_BLOCK = 131923241;
         // keccak256("Listed(uint256,address,uint256)")
         var LISTED_TOPIC = "0x50955776c5778c3b7d968d86d8c51fb6b29a7a74c20866b533268e209fc08343";
         var SEL = {
+          totalSupply: "0x18160ddd",   // totalSupply() -> (uint256)
           listings: "0xde74e57b",      // listings(uint256) -> (address seller, uint256 price, bool active)
           highestBid: "0xb14c63c5",    // highestBid(uint256) -> (address bidder, uint256 amount)
           getOfferCount: "0x81ad298a"  // getOfferCount(uint256) -> (uint256)
         };
         var META_BASE = "https://muster.lol/meta/";
         var REFRESH_MS = 60000;
-        var SCAN_CHUNK = 1000; // blocks per eth_getLogs window; the public node rejects wider ranges
+        var SCAN_CHUNK = 500; // blocks per eth_getLogs window; kept small to stay gentle on public RPC
 
         var content = document.getElementById("content");
         var statusEl = document.getElementById("status");
@@ -507,6 +509,10 @@
           var m = (e && e.message) || "";
           return /limit exceeded/i.test(m) && !/rate limit/i.test(m);
         }
+        function isRateLimit(e) {
+          var m = (e && e.message) || "";
+          return /rate limit/i.test(m) || (e && e.code === -32005 && /rate/i.test(m));
+        }
         // Transient failures (node throttling, dropped or garbled replies)
         // are worth a retry; genuine RPC errors are not.
         function isTransient(e) {
@@ -518,10 +524,28 @@
 
         /* ---------------- Chain reads ---------------- */
 
+        // Single eth_call for totalSupply() on the PuzzleNFT contract.
+        // Used as a gate before any event scanning: if nothing is minted,
+        // no listing can exist, so eth_getLogs is skipped entirely.
+        function readTotalSupply(attempt) {
+          attempt = attempt || 0;
+          return rpc("eth_call", [{ to: NFT, data: SEL.totalSupply }, "latest"]).then(function (res) {
+            if (!res || res === "0x") return 0n;
+            return BigInt(res);
+          }).catch(function (e) {
+            if (isTransient(e) && attempt < 2) {
+              return delay(700).then(function () { return readTotalSupply(attempt + 1); });
+            }
+            throw e;
+          });
+        }
+
         // Scan one block window for Listed logs; on a node range-limit error,
-        // split the window in half and retry each side. Transient node
+        // split the window in half and retry each side. If the window is
+        // rate-limited, wait 2 seconds and retry that window once on the
+        // next fallback endpoint before giving up. Other transient node
         // failures are retried with a short backoff.
-        function scanWindow(from, to, out, attempt) {
+        function scanWindow(from, to, out, attempt, rateRetried) {
           attempt = attempt || 0;
           return rpc("eth_getLogs", [{
             address: MARKET,
@@ -533,13 +557,19 @@
           }).catch(function (e) {
             if (isLimitError(e) && to > from) {
               var mid = Math.floor((from + to) / 2);
-              return scanWindow(from, mid, out, 0).then(function () {
-                return scanWindow(mid + 1, to, out, 0);
+              return scanWindow(from, mid, out, 0, rateRetried).then(function () {
+                return scanWindow(mid + 1, to, out, 0, rateRetried);
+              });
+            }
+            if (isRateLimit(e) && !rateRetried) {
+              rpcIndex++;
+              return delay(2000).then(function () {
+                return scanWindow(from, to, out, attempt, true);
               });
             }
             if (isTransient(e) && attempt < 3) {
               return delay(700 * (attempt + 1)).then(function () {
-                return scanWindow(from, to, out, attempt + 1);
+                return scanWindow(from, to, out, attempt + 1, rateRetried);
               });
             }
             throw e;
@@ -557,17 +587,19 @@
           function worker() {
             if (idx >= windows.length) return Promise.resolve();
             var w = windows[idx++];
-            return scanWindow(w[0], w[1], logs).then(function () {
+            var isFirst = idx === 1;
+            var start = isFirst ? Promise.resolve() : delay(400);
+            return start.then(function () {
+              return scanWindow(w[0], w[1], logs);
+            }).then(function () {
               setLoadingDetail("Scanning the market contract for listings — block window " +
                 Math.min(idx, total) + " of " + total + " (chain height " + latest.toLocaleString("en-US") + ").");
               return worker();
             });
           }
-          // Two workers in parallel keep the scan moving without tripping
-          // the public node's request rate limit.
-          var workers = [];
-          for (var k = 0; k < Math.min(2, windows.length); k++) workers.push(worker());
-          return Promise.all(workers).then(function () {
+          // Sequential scan with a 400ms pause between windows keeps the
+          // read gentle on the public RPC and avoids rate limits.
+          return worker().then(function () {
             var seen = {};
             var ids = [];
             logs.forEach(function (log) {
@@ -765,6 +797,12 @@
 
           return blockNumber(0).then(function (h) {
             lastHeight = Number(BigInt(h));
+            setLoadingDetail("Checking how many Muster NFTs have been minted…");
+            return readTotalSupply();
+          }).then(function (supply) {
+            // If nothing is minted, no listing can exist — show the empty
+            // state immediately without calling eth_getLogs at all.
+            if (supply === 0n) return [];
             return findListedTokenIds(lastHeight);
           }).then(function (ids) {
             if (!ids.length) return [];

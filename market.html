@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Muster Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Marcellus&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-deep: #0b0a08;
+        --bg: #12100c;
+        --surface: #1c1913;
+        --surface-2: #26221a;
+        --line: #37311f;
+        --ink: #ece4d2;
+        --ink-soft: #b8ad97;
+        --ink-faint: #8a8171;
+        --brass: #d9a84e;
+        --brass-bright: #eebd63;
+        --brass-deep: #9a6b1e;
+        --brass-soft: rgba(217, 168, 78, 0.13);
+        --ember: #e08a4c;
+        --good: #8fce7f;
+        --danger: #e88a6d;
+        --radius: 14px;
+        --shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg-deep);
+        color: var(--ink);
+        font-family: "Archivo", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
+      }
+      a { color: var(--brass-bright); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px 72px; }
+
+      /* ---------- Header ---------- */
+      header { padding: 44px 0 8px; }
+      .backlink {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 13px;
+        color: var(--ink-faint);
+        letter-spacing: 0.02em;
+      }
+      .backlink:hover { color: var(--brass-bright); }
+      h1 {
+        font-family: "Marcellus", serif;
+        font-weight: 400;
+        font-size: clamp(34px, 6vw, 52px);
+        line-height: 1.08;
+        margin: 14px 0 10px;
+        color: var(--ink);
+      }
+      h1 .gold { color: var(--brass); }
+      .lede { color: var(--ink-soft); max-width: 62ch; margin: 0; font-size: 17px; }
+      .rule {
+        height: 1px;
+        background: linear-gradient(90deg, var(--brass), transparent 65%);
+        margin: 26px 0 0;
+        opacity: 0.7;
+      }
+
+      /* ---------- Contract / fees bar ---------- */
+      .contract-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px 34px;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        margin-top: 24px;
+      }
+      .contract-bar .label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+        margin-bottom: 3px;
+      }
+      .addr {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 14px;
+        color: var(--ink);
+        word-break: break-all;
+      }
+      .addr a { color: var(--brass-bright); white-space: nowrap; word-break: normal; font-size: 13px; }
+      .fees { color: var(--ink-soft); font-size: 14.5px; max-width: 46ch; }
+      .fees strong { color: var(--brass-bright); font-weight: 600; }
+
+      /* ---------- Toolbar ---------- */
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 18px;
+        margin: 34px 0 6px;
+      }
+      .toolbar h2 {
+        font-family: "Marcellus", serif;
+        font-weight: 400;
+        font-size: 26px;
+        margin: 0;
+        margin-right: auto;
+      }
+      .status {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12.5px;
+        color: var(--ink-faint);
+      }
+      .status .dot {
+        display: inline-block;
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: var(--good);
+        margin-right: 7px;
+        vertical-align: 1px;
+      }
+      .status.err .dot { background: var(--danger); }
+      button.refresh {
+        appearance: none;
+        border: 1px solid var(--brass-deep);
+        background: var(--brass-soft);
+        color: var(--brass-bright);
+        font-family: "Archivo", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 9px 18px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+      button.refresh:hover:not(:disabled) { background: rgba(217, 168, 78, 0.22); border-color: var(--brass); }
+      button.refresh:disabled { opacity: 0.55; cursor: default; }
+
+      /* ---------- States ---------- */
+      .state {
+        border: 1px dashed var(--line);
+        border-radius: var(--radius);
+        padding: 52px 28px;
+        text-align: center;
+        margin-top: 18px;
+        background: rgba(28, 25, 19, 0.45);
+      }
+      .state h3 {
+        font-family: "Marcellus", serif;
+        font-weight: 400;
+        font-size: 24px;
+        margin: 0 0 10px;
+      }
+      .state p { color: var(--ink-soft); margin: 0 auto; max-width: 52ch; }
+      .state .big-num {
+        font-family: "Marcellus", serif;
+        font-size: 54px;
+        color: var(--brass);
+        line-height: 1;
+        display: block;
+        margin-bottom: 16px;
+      }
+      .spinner {
+        width: 34px; height: 34px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        border: 3px solid var(--line);
+        border-top-color: var(--brass);
+        animation: spin 0.9s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) {
+        .spinner { animation-duration: 2.4s; }
+      }
+      .state button.refresh { margin-top: 20px; }
+      .err-detail {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12.5px;
+        color: var(--danger);
+        margin-top: 12px;
+        word-break: break-word;
+      }
+
+      /* ---------- Listing grid ---------- */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+        gap: 18px;
+        margin-top: 18px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: border-color 0.15s ease, transform 0.15s ease;
+      }
+      .card:hover { border-color: var(--brass-deep); transform: translateY(-2px); }
+      .card .art {
+        aspect-ratio: 1 / 1;
+        background: var(--surface-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .card .art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .card .art .noimg {
+        font-family: "Marcellus", serif;
+        font-size: 44px;
+        color: var(--brass-deep);
+      }
+      .card .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+      .card .name {
+        font-family: "Marcellus", serif;
+        font-size: 20px;
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .card .name .tid {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        color: var(--ink-faint);
+        white-space: nowrap;
+      }
+      .price-row { display: flex; align-items: baseline; gap: 8px; }
+      .price {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--brass-bright);
+      }
+      .price-unit { font-size: 13px; color: var(--ink-faint); font-weight: 600; letter-spacing: 0.08em; }
+      dl.facts { margin: 2px 0 0; display: grid; gap: 6px; font-size: 13.5px; }
+      dl.facts .row { display: flex; justify-content: space-between; gap: 12px; }
+      dl.facts dt { color: var(--ink-faint); }
+      dl.facts dd {
+        margin: 0;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12.5px;
+        color: var(--ink-soft);
+        text-align: right;
+      }
+      dl.facts dd.plain { font-family: "Archivo", sans-serif; font-size: 13.5px; }
+
+      /* ---------- How to trade ---------- */
+      .howto {
+        margin-top: 56px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 26px 28px 28px;
+      }
+      .howto h2 {
+        font-family: "Marcellus", serif;
+        font-weight: 400;
+        font-size: 24px;
+        margin: 0 0 8px;
+      }
+      .howto > p { color: var(--ink-soft); margin: 0 0 20px; max-width: 68ch; }
+      .fns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .fn {
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 16px 18px;
+      }
+      .fn code {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--brass-bright);
+      }
+      .fn p { color: var(--ink-soft); font-size: 14px; margin: 8px 0 0; }
+      @media (max-width: 760px) {
+        .fns { grid-template-columns: 1fr; }
+      }
+
+      footer {
+        margin-top: 44px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        color: var(--ink-faint);
+        font-size: 13.5px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 22px;
+        justify-content: space-between;
+      }
+      footer .mono { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <a class="backlink" href="https://muster.lol">&larr; muster.lol</a>
+        <h1>Muster <span class="gold">Market</span></h1>
+        <p class="lede">
+          Muster NFTs listed for sale on BNB Smart Chain, read live from the market
+          contract itself. Prices are in BNB; every trade settles on-chain between
+          the buyer's and seller's own wallets.
+        </p>
+        <div class="rule"></div>
+      </header>
+
+      <section class="contract-bar" aria-label="Market contract and fees">
+        <div>
+          <div class="label">Market contract · BSC (chain 56)</div>
+          <div class="addr">
+            0xEA268B49935220805DE90b4B26eaB46131F10D51
+            <a href="https://bscscan.com/address/0xEA268B49935220805DE90b4B26eaB46131F10D51" target="_blank" rel="noopener">View on BscScan &#8599;</a>
+          </div>
+        </div>
+        <p class="fees">
+          Fees on every sale: <strong>1% creator royalty</strong> +
+          <strong>1% marketplace fee</strong>. The seller receives the remaining 98%.
+        </p>
+      </section>
+
+      <div class="toolbar">
+        <h2>Listings</h2>
+        <span class="status" id="status"><span class="dot"></span><span id="status-text">Connecting&hellip;</span></span>
+        <button class="refresh" id="refresh-btn" type="button">Refresh</button>
+      </div>
+
+      <main id="content" aria-live="polite">
+        <div class="state" id="state-loading">
+          <div class="spinner" role="img" aria-label="Loading"></div>
+          <h3>Reading the chain&hellip;</h3>
+          <p id="loading-detail">Scanning the market contract for listings.</p>
+        </div>
+      </main>
+
+      <section class="howto" aria-label="How buying, bidding and offering work">
+        <h2>Buying, bidding &amp; offering</h2>
+        <p>
+          This page is a read-only view of the market. Trades happen on-chain through
+          your own wallet: call one of the market contract's functions below from your
+          wallet (for example through the contract's <em>Write</em> tab on BscScan),
+          sending BNB with the call. There is no wallet connection and no checkout on
+          this page.
+        </p>
+        <div class="fns">
+          <div class="fn">
+            <code>buyItem(tokenId)</code>
+            <p>Buy a listed Muster outright. Send exactly the listing price in BNB; the NFT moves to your wallet and the seller is paid after the 1% royalty and 1% fee.</p>
+          </div>
+          <div class="fn">
+            <code>placeBid(tokenId)</code>
+            <p>Place a bid on a listed Muster. Send the bid amount in BNB with the call; the highest bid is shown on each listing above.</p>
+          </div>
+          <div class="fn">
+            <code>makeOffer(tokenId)</code>
+            <p>Make an offer on a listed Muster. Send the offered amount in BNB with the call; the number of open offers is shown on each listing above.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <span>Part of <a href="https://muster.lol">muster.lol</a> · Collection of 888 Muster NFTs on BSC</span>
+        <span class="mono">Data: live JSON-RPC reads · BSC public RPC</span>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        // Public BSC JSON-RPC endpoints, tried in order. The first is the
+        // primary; if a node throttles or drops a request, the read moves to
+        // the next public endpoint instead of failing the page.
+        var RPC_URLS = [
+          "https://bsc-dataseed.binance.org",
+          "https://bsc-dataseed1.binance.org",
+          "https://bsc-dataseed2.binance.org",
+          "https://bsc-dataseed3.binance.org",
+          "https://bsc-dataseed4.binance.org",
+          "https://bsc.publicnode.com"
+        ];
+        var rpcIndex = 0;
+        var MARKET = "0xEA268B49935220805DE90b4B26eaB46131F10D51";
+        var DEPLOY_BLOCK = 131923241;
+        // keccak256("Listed(uint256,address,uint256)")
+        var LISTED_TOPIC = "0x50955776c5778c3b7d968d86d8c51fb6b29a7a74c20866b533268e209fc08343";
+        var SEL = {
+          listings: "0xde74e57b",      // listings(uint256) -> (address seller, uint256 price, bool active)
+          highestBid: "0xb14c63c5",    // highestBid(uint256) -> (address bidder, uint256 amount)
+          getOfferCount: "0x81ad298a"  // getOfferCount(uint256) -> (uint256)
+        };
+        var META_BASE = "https://muster.lol/meta/";
+        var REFRESH_MS = 60000;
+        var SCAN_CHUNK = 1000; // blocks per eth_getLogs window; the public node rejects wider ranges
+
+        var content = document.getElementById("content");
+        var statusEl = document.getElementById("status");
+        var statusText = document.getElementById("status-text");
+        var refreshBtn = document.getElementById("refresh-btn");
+
+        var loading = false;
+        var lastHeight = null;
+        var countdownTimer = null;
+        var secondsLeft = REFRESH_MS / 1000;
+
+        /* ---------------- JSON-RPC helpers ---------------- */
+
+        var rpcId = 0;
+        function rpcPost(url, payload) {
+          return fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          }).then(function (res) {
+            if (!res.ok) {
+              var he = new Error("RPC HTTP " + res.status);
+              he.transient = true;
+              throw he;
+            }
+            return res.json();
+          });
+        }
+        function decodeBatch(json, payload) {
+          var arr = Array.isArray(json) ? json : [json];
+          var byId = {};
+          arr.forEach(function (r) { if (r && r.id != null) byId[r.id] = r; });
+          return payload.map(function (p) {
+            var r = byId[p.id];
+            if (!r) {
+              // Some nodes answer a request with a single id-less error object.
+              if (arr.length === 1 && arr[0] && arr[0].error) {
+                var se = new Error(arr[0].error.message || "RPC error");
+                se.code = arr[0].error.code;
+                if (/rate limit/i.test(se.message)) se.transient = true;
+                throw se;
+              }
+              var me = new Error("RPC: incomplete response");
+              me.transient = true;
+              throw me;
+            }
+            if (r.error) {
+              var e = new Error(r.error.message || "RPC error");
+              e.code = r.error.code;
+              if (/rate limit/i.test(e.message)) e.transient = true;
+              throw e;
+            }
+            return r.result;
+          });
+        }
+        function rpcBatch(calls, attempt) {
+          // calls: [{method, params}] -> Promise<array of results>.
+          // On a transient failure (throttling, HTTP error, garbled reply)
+          // the read rotates to the next public endpoint and retries.
+          attempt = attempt || 0;
+          var payload = calls.map(function (c) {
+            return { jsonrpc: "2.0", id: ++rpcId, method: c.method, params: c.params };
+          });
+          var url = RPC_URLS[rpcIndex % RPC_URLS.length];
+          return rpcPost(url, payload).then(function (json) {
+            return decodeBatch(json, payload);
+          }).catch(function (e) {
+            if (isTransient(e) && attempt < RPC_URLS.length) {
+              rpcIndex++;
+              return delay(600).then(function () { return rpcBatch(calls, attempt + 1); });
+            }
+            throw e;
+          });
+        }
+        function rpc(method, params) {
+          return rpcBatch([{ method: method, params: params }]).then(function (r) { return r[0]; });
+        }
+
+        function hex(n) { return "0x" + n.toString(16); }
+        function padTokenId(id) {
+          var s = id.toString(16);
+          while (s.length < 64) s = "0" + s;
+          return s;
+        }
+        function wordAt(hexStr, i) {
+          return hexStr.slice(2 + i * 64, 2 + (i + 1) * 64);
+        }
+        function addrFromWord(w) { return "0x" + w.slice(24); }
+        function uintFromWord(w) { return BigInt("0x" + w); }
+        var ZERO_ADDR = "0x0000000000000000000000000000000000000000";
+
+        function isLimitError(e) {
+          // Nodes use the same -32005 code for two different failures:
+          // "limit exceeded" means the block range is too wide (split it),
+          // while "rate limit exceeded" / "triggered rate limit" is
+          // transient throttling (back off and retry). The rate-limit
+          // wording contains "limit exceeded", so it must be excluded here.
+          var m = (e && e.message) || "";
+          return /limit exceeded/i.test(m) && !/rate limit/i.test(m);
+        }
+        // Transient failures (node throttling, dropped or garbled replies)
+        // are worth a retry; genuine RPC errors are not.
+        function isTransient(e) {
+          return !!e && (e.transient === true || e.name === "TypeError");
+        }
+        function delay(ms) {
+          return new Promise(function (res) { setTimeout(res, ms); });
+        }
+
+        /* ---------------- Chain reads ---------------- */
+
+        // Scan one block window for Listed logs; on a node range-limit error,
+        // split the window in half and retry each side. Transient node
+        // failures are retried with a short backoff.
+        function scanWindow(from, to, out, attempt) {
+          attempt = attempt || 0;
+          return rpc("eth_getLogs", [{
+            address: MARKET,
+            fromBlock: hex(from),
+            toBlock: hex(to),
+            topics: [LISTED_TOPIC]
+          }]).then(function (logs) {
+            for (var i = 0; i < logs.length; i++) out.push(logs[i]);
+          }).catch(function (e) {
+            if (isLimitError(e) && to > from) {
+              var mid = Math.floor((from + to) / 2);
+              return scanWindow(from, mid, out, 0).then(function () {
+                return scanWindow(mid + 1, to, out, 0);
+              });
+            }
+            if (isTransient(e) && attempt < 3) {
+              return delay(700 * (attempt + 1)).then(function () {
+                return scanWindow(from, to, out, attempt + 1);
+              });
+            }
+            throw e;
+          });
+        }
+
+        function findListedTokenIds(latest) {
+          var logs = [];
+          var windows = [];
+          for (var f = DEPLOY_BLOCK; f <= latest; f += SCAN_CHUNK) {
+            windows.push([f, Math.min(f + SCAN_CHUNK - 1, latest)]);
+          }
+          var idx = 0;
+          var total = windows.length;
+          function worker() {
+            if (idx >= windows.length) return Promise.resolve();
+            var w = windows[idx++];
+            return scanWindow(w[0], w[1], logs).then(function () {
+              setLoadingDetail("Scanning the market contract for listings — block window " +
+                Math.min(idx, total) + " of " + total + " (chain height " + latest.toLocaleString("en-US") + ").");
+              return worker();
+            });
+          }
+          // Two workers in parallel keep the scan moving without tripping
+          // the public node's request rate limit.
+          var workers = [];
+          for (var k = 0; k < Math.min(2, windows.length); k++) workers.push(worker());
+          return Promise.all(workers).then(function () {
+            var seen = {};
+            var ids = [];
+            logs.forEach(function (log) {
+              var id;
+              if (log.topics && log.topics.length > 1) {
+                id = Number(BigInt(log.topics[1]));
+              } else if (log.data && log.data.length >= 66) {
+                id = Number(BigInt("0x" + log.data.slice(2, 66)));
+              } else {
+                return;
+              }
+              if (!seen[id]) { seen[id] = true; ids.push(id); }
+            });
+            return ids;
+          });
+        }
+
+        function readListing(id, attempt) {
+          var data = padTokenId(id);
+          return rpcBatch([
+            { method: "eth_call", params: [{ to: MARKET, data: SEL.listings + data }, "latest"] },
+            { method: "eth_call", params: [{ to: MARKET, data: SEL.highestBid + data }, "latest"] },
+            { method: "eth_call", params: [{ to: MARKET, data: SEL.getOfferCount + data }, "latest"] }
+          ]).then(function (r) {
+            var l = r[0], b = r[1], oc = r[2];
+            return {
+              tokenId: id,
+              seller: addrFromWord(wordAt(l, 0)),
+              price: uintFromWord(wordAt(l, 1)),
+              active: uintFromWord(wordAt(l, 2)) !== 0n,
+              bidBidder: addrFromWord(wordAt(b, 0)),
+              bidAmount: uintFromWord(wordAt(b, 1)),
+              offerCount: Number(uintFromWord(wordAt(oc, 0)))
+            };
+          }).catch(function (e) {
+            if (isTransient(e) && (attempt || 0) < 2) {
+              return delay(700).then(function () { return readListing(id, (attempt || 0) + 1); });
+            }
+            throw e;
+          });
+        }
+
+        function fetchMeta(id) {
+          return fetch(META_BASE + id + ".json").then(function (res) {
+            if (!res.ok) throw new Error("meta " + res.status);
+            return res.json();
+          }).catch(function () { return null; });
+        }
+
+        /* ---------------- Formatting ---------------- */
+
+        function fmtBNB(wei) {
+          var UNIT = 10n ** 18n;
+          var scaled = (wei * 10000n + UNIT / 2n) / UNIT; // rounded to 4 decimals
+          var intPart = scaled / 10000n;
+          var frac = (scaled % 10000n).toString();
+          while (frac.length < 4) frac = "0" + frac;
+          frac = frac.replace(/0+$/, "");
+          return frac ? intPart.toString() + "." + frac : intPart.toString();
+        }
+        function shortAddr(a) {
+          return a.slice(0, 6) + "..." + a.slice(-4);
+        }
+
+        /* ---------------- Rendering ---------------- */
+
+        function el(tag, cls, text) {
+          var n = document.createElement(tag);
+          if (cls) n.className = cls;
+          if (text != null) n.textContent = text;
+          return n;
+        }
+
+        function setStatus(text, isErr) {
+          statusText.textContent = text;
+          statusEl.className = "status" + (isErr ? " err" : "");
+        }
+        function setLoadingDetail(text) {
+          var d = document.getElementById("loading-detail");
+          if (d) d.textContent = text;
+        }
+
+        function showLoading() {
+          content.innerHTML = "";
+          var box = el("div", "state");
+          box.appendChild(el("div", "spinner"));
+          box.appendChild(el("h3", null, "Reading the chain…"));
+          var p = el("p", null, "Scanning the market contract for listings.");
+          p.id = "loading-detail";
+          box.appendChild(p);
+          content.appendChild(box);
+        }
+
+        function showError(err) {
+          content.innerHTML = "";
+          var box = el("div", "state");
+          box.appendChild(el("h3", null, "Could not read the market"));
+          box.appendChild(el("p", null,
+            "The live read from the BSC public RPC failed, so no listings can be shown right now. Nothing is cached here — try again to re-read the chain."));
+          var d = el("div", "err-detail", String(err && err.message ? err.message : err));
+          box.appendChild(d);
+          var btn = el("button", "refresh", "Retry");
+          btn.type = "button";
+          btn.addEventListener("click", function () { load(); });
+          box.appendChild(btn);
+          content.appendChild(box);
+          setStatus("RPC read failed", true);
+        }
+
+        function showEmpty() {
+          content.innerHTML = "";
+          var box = el("div", "state");
+          box.appendChild(el("span", "big-num", "0 / 888"));
+          box.appendChild(el("h3", null, "No NFTs listed yet — 0 of 888 minted."));
+          box.appendChild(el("p", null,
+            "Listings will appear here once a Muster is minted and listed."));
+          content.appendChild(box);
+        }
+
+        function listingCard(item) {
+          var card = el("article", "card");
+          var art = el("div", "art");
+          if (item.image) {
+            var img = document.createElement("img");
+            img.src = item.image;
+            img.alt = item.name;
+            img.loading = "lazy";
+            img.addEventListener("error", function () {
+              art.innerHTML = "";
+              art.appendChild(el("span", "noimg", "#" + item.tokenId));
+            });
+            art.appendChild(img);
+          } else {
+            art.appendChild(el("span", "noimg", "#" + item.tokenId));
+          }
+          card.appendChild(art);
+
+          var body = el("div", "body");
+          var name = el("h3", "name");
+          name.appendChild(document.createTextNode(item.name));
+          name.appendChild(el("span", "tid", "Token #" + item.tokenId));
+          body.appendChild(name);
+
+          var priceRow = el("div", "price-row");
+          priceRow.appendChild(el("span", "price", fmtBNB(item.price)));
+          priceRow.appendChild(el("span", "price-unit", "BNB"));
+          body.appendChild(priceRow);
+
+          var dl = el("dl", "facts");
+          function row(dt, ddText, plain) {
+            var r = el("div", "row");
+            r.appendChild(el("dt", null, dt));
+            r.appendChild(el("dd", plain ? "plain" : null, ddText));
+            dl.appendChild(r);
+          }
+          row("Seller", shortAddr(item.seller));
+          if (item.bidAmount > 0n && item.bidBidder !== ZERO_ADDR) {
+            row("Highest bid", fmtBNB(item.bidAmount) + " BNB");
+          } else {
+            row("Highest bid", "No bids", true);
+          }
+          row("Offers", String(item.offerCount), true);
+          body.appendChild(dl);
+
+          card.appendChild(body);
+          return card;
+        }
+
+        function showListings(items) {
+          content.innerHTML = "";
+          var grid = el("div", "grid");
+          items.forEach(function (item) { grid.appendChild(listingCard(item)); });
+          content.appendChild(grid);
+        }
+
+        /* ---------------- Load cycle ---------------- */
+
+        function blockNumber(attempt) {
+          return rpc("eth_blockNumber", []).catch(function (e) {
+            if (isTransient(e) && attempt < 2) {
+              return delay(700).then(function () { return blockNumber(attempt + 1); });
+            }
+            throw e;
+          });
+        }
+
+        function load() {
+          if (loading) return Promise.resolve();
+          loading = true;
+          refreshBtn.disabled = true;
+          refreshBtn.textContent = "Refreshing…";
+          setStatus("Reading chain…", false);
+          var hadContent = content.querySelector(".grid") !== null;
+          if (!hadContent) showLoading();
+
+          return blockNumber(0).then(function (h) {
+            lastHeight = Number(BigInt(h));
+            return findListedTokenIds(lastHeight);
+          }).then(function (ids) {
+            if (!ids.length) return [];
+            return Promise.all(ids.map(readListing)).then(function (rows) {
+              return rows.filter(function (r) { return r.active; });
+            });
+          }).then(function (active) {
+            active.sort(function (a, b) {
+              return a.price < b.price ? -1 : a.price > b.price ? 1 : a.tokenId - b.tokenId;
+            });
+            if (!active.length) {
+              showEmpty();
+              finishOk(0);
+              return null;
+            }
+            return Promise.all(active.map(function (r) {
+              return fetchMeta(r.tokenId).then(function (meta) {
+                r.name = meta && meta.name ? String(meta.name) : "Muster #" + r.tokenId;
+                r.image = meta && meta.image ? String(meta.image) : null;
+                return r;
+              });
+            })).then(function (items) {
+              showListings(items);
+              finishOk(items.length);
+            });
+          }).catch(function (err) {
+            showError(err);
+          }).then(function () {
+            loading = false;
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = "Refresh";
+            restartCountdown();
+          });
+        }
+
+        function finishOk(count) {
+          var now = new Date();
+          var t = now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+          setStatus(
+            count + (count === 1 ? " listing" : " listings") +
+            " · block " + (lastHeight ? lastHeight.toLocaleString("en-US") : "—") +
+            " · updated " + t, false);
+        }
+
+        function restartCountdown() {
+          secondsLeft = REFRESH_MS / 1000;
+          if (countdownTimer) clearInterval(countdownTimer);
+          countdownTimer = setInterval(function () {
+            secondsLeft--;
+            if (secondsLeft <= 0) {
+              clearInterval(countdownTimer);
+              countdownTimer = null;
+              load();
+            }
+          }, 1000);
+        }
+
+        refreshBtn.addEventListener("click", function () { load(); });
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden && !loading && secondsLeft <= 0) load();
+        });
+
+        load();
+      })();
+    </script>
+  </body>
+</html>

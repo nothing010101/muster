@@ -401,7 +401,7 @@
         // keccak256("Listed(uint256,address,uint256)")
         var LISTED_TOPIC = "0x50955776c5778c3b7d968d86d8c51fb6b29a7a74c20866b533268e209fc08343";
         var SEL = {
-          totalSupply: "0x18160ddd",   // totalSupply() -> (uint256)
+          totalMinted: "0xa2309ff8",   // totalMinted() -> (uint256)
           listings: "0xde74e57b",      // listings(uint256) -> (address seller, uint256 price, bool active)
           highestBid: "0xb14c63c5",    // highestBid(uint256) -> (address bidder, uint256 amount)
           getOfferCount: "0x81ad298a"  // getOfferCount(uint256) -> (uint256)
@@ -524,17 +524,19 @@
 
         /* ---------------- Chain reads ---------------- */
 
-        // Single eth_call for totalSupply() on the PuzzleNFT contract.
-        // Used as a gate before any event scanning: if nothing is minted,
-        // no listing can exist, so eth_getLogs is skipped entirely.
-        function readTotalSupply(attempt) {
+        // Single eth_call for totalMinted() on the PuzzleNFT contract
+        // (a public uint256 state variable with an auto-generated getter;
+        // the contract has no totalSupply()). Used as a gate before any
+        // event scanning: if nothing is minted, no listing can exist, so
+        // eth_getLogs is skipped entirely.
+        function readTotalMinted(attempt) {
           attempt = attempt || 0;
-          return rpc("eth_call", [{ to: NFT, data: SEL.totalSupply }, "latest"]).then(function (res) {
+          return rpc("eth_call", [{ to: NFT, data: SEL.totalMinted }, "latest"]).then(function (res) {
             if (!res || res === "0x") return 0n;
             return BigInt(res);
           }).catch(function (e) {
             if (isTransient(e) && attempt < 2) {
-              return delay(700).then(function () { return readTotalSupply(attempt + 1); });
+              return delay(700).then(function () { return readTotalMinted(attempt + 1); });
             }
             throw e;
           });
@@ -798,7 +800,7 @@
           return blockNumber(0).then(function (h) {
             lastHeight = Number(BigInt(h));
             setLoadingDetail("Checking how many Muster NFTs have been minted…");
-            return readTotalSupply();
+            return readTotalMinted();
           }).then(function (supply) {
             // If nothing is minted, no listing can exist — show the empty
             // state immediately without calling eth_getLogs at all.

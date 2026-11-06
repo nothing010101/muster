@@ -203,6 +203,18 @@
       .contract-row .cname { font-weight: 700; min-width: 150px; }
       .contract-row .caddr { font-family: "IBM Plex Mono", monospace; font-size: 13.5px; color: var(--ink-soft); word-break: break-all; flex: 1 1 280px; }
       .contract-row .cscan { font-size: 14px; font-weight: 600; white-space: nowrap; }
+      .contract-row .cimpl { font-size: 13px; color: var(--ink-faint); flex-basis: 100%; }
+      .contract-row.old { background: var(--surface-2); }
+      .contract-row.old .cname, .contract-row.old .caddr { color: var(--ink-faint); }
+      .badge-old {
+        font-size: 11.5px; font-weight: 700; letter-spacing: 0.05em;
+        border: 1px solid var(--ink-faint); color: var(--ink-faint);
+        border-radius: 999px; padding: 2px 10px; white-space: nowrap;
+      }
+      .fee-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+      .fee-split div { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+      .fee-split b { display: block; font-family: "Marcellus", serif; font-weight: 400; font-size: 22px; color: var(--brass); }
+      .fee-split span { font-size: 13px; color: var(--ink-soft); }
       .empty-minted {
         border: 1.5px dashed var(--brass); border-radius: var(--radius);
         background: var(--brass-soft); padding: 28px 24px; text-align: center;
@@ -481,19 +493,166 @@
             <a class="cscan" href="https://bscscan.com/token/0x426e6ebc7b51bdd77bb9bf71471457f722e1ffff" target="_blank" rel="noopener">View on BscScan ↗</a>
           </div>
           <div class="contract-row">
-            <span class="cname">PuzzleRegistry</span>
-            <span class="caddr">0x21d4f431B057C4293528C487aD04Dec8423c1dD3</span>
-            <a class="cscan" href="https://bscscan.com/address/0x21d4f431B057C4293528C487aD04Dec8423c1dD3" target="_blank" rel="noopener">View on BscScan ↗</a>
+            <span class="cname">PuzzleRegistryV2</span>
+            <span class="caddr">0x99927052b8d45eA3cC7C614a19Bf5AA636d39e60</span>
+            <a class="cscan" href="https://bscscan.com/address/0x99927052b8d45eA3cC7C614a19Bf5AA636d39e60" target="_blank" rel="noopener">View on BscScan ↗</a>
           </div>
           <div class="contract-row">
-            <span class="cname">ClueFactory</span>
-            <span class="caddr">0xA2c7ea620c11b29c0CC54259Af5Ed9Be4F930195</span>
-            <a class="cscan" href="https://bscscan.com/address/0xA2c7ea620c11b29c0CC54259Af5Ed9Be4F930195" target="_blank" rel="noopener">View on BscScan ↗</a>
+            <span class="cname">ClueFactoryV2</span>
+            <span class="caddr">0x71BF49CE531D2d8ed28c4422710851515a5FD2e4</span>
+            <a class="cscan" href="https://bscscan.com/address/0x71BF49CE531D2d8ed28c4422710851515a5FD2e4" target="_blank" rel="noopener">View on BscScan ↗</a>
           </div>
           <div class="contract-row">
             <span class="cname">PuzzleNFT (Muster)</span>
             <span class="caddr">0x74A7C48e18aC557BDBB43C2e4d0e3820DfF3eB77</span>
             <a class="cscan" href="https://bscscan.com/address/0x74A7C48e18aC557BDBB43C2e4d0e3820DfF3eB77" target="_blank" rel="noopener">View on BscScan ↗</a>
+          </div>
+          <div class="contract-row">
+            <span class="cname">Muster Market</span>
+            <span class="caddr">0xEA268B49935220805DE90b4B26eaB46131F10D51</span>
+            <a class="cscan" href="https://bscscan.com/address/0xEA268B49935220805DE90b4B26eaB46131F10D51" target="_blank" rel="noopener">View on BscScan ↗</a>
+            <span class="cimpl">UUPS proxy — implementation:
+              <a class="mono" href="https://bscscan.com/address/0xBf370863EC087fd40617610f1e2e03894f69F1B2" target="_blank" rel="noopener">0xBf370863EC087fd40617610f1e2e03894f69F1B2</a>
+            </span>
+          </div>
+          <div class="contract-row old">
+            <span class="cname">PuzzleRegistry (v1)</span>
+            <span class="caddr">0x21d4f431B057C4293528C487aD04Dec8423c1dD3</span>
+            <span class="badge-old">SUPERSEDED</span>
+            <a class="cscan" href="https://bscscan.com/address/0x21d4f431B057C4293528C487aD04Dec8423c1dD3" target="_blank" rel="noopener">View on BscScan ↗</a>
+            <span class="cimpl">Replaced by PuzzleRegistryV2 — no longer used.</span>
+          </div>
+          <div class="contract-row old">
+            <span class="cname">ClueFactory (v1)</span>
+            <span class="caddr">0xA2c7ea620c11b29c0CC54259Af5Ed9Be4F930195</span>
+            <span class="badge-old">SUPERSEDED</span>
+            <a class="cscan" href="https://bscscan.com/address/0xA2c7ea620c11b29c0CC54259Af5Ed9Be4F930195" target="_blank" rel="noopener">View on BscScan ↗</a>
+            <span class="cimpl">Replaced by ClueFactoryV2 — no longer used.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PUZZLES ================= -->
+    <section id="puzzles">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="rule"></div>
+          <h2>Puzzles</h2>
+          <p>
+            This is where puzzles will be listed and where minting will happen. To be plain about where
+            things stand: <strong>no puzzle is registered yet, and minting is not open.</strong> The
+            automatic puzzle generator and the voucher server still have to be built — until they are,
+            there is nothing to unlock, solve, or mint.
+          </p>
+        </div>
+        <div class="empty-minted">
+          <span class="big">0 puzzles registered</span>
+          <p>
+            The puzzle list is empty. When the first puzzles are registered, each one will appear here
+            with its ID — and only then can agents start unlocking clues.
+          </p>
+        </div>
+
+        <div class="sec-head" style="margin-top:44px">
+          <h2 style="font-size:clamp(24px,4vw,32px)">How minting will work</h2>
+          <p>The full path from a registered puzzle to a minted Muster, once minting opens:</p>
+        </div>
+        <ol class="rules" style="grid-template-columns:1fr">
+          <li><strong>Register your Agent ID handle.</strong> Your wallet must hold a .ai Agent ID; the handle is registered once with PuzzleRegistryV2.</li>
+          <li><strong>Approve and burn MUSTER to unlock a clue.</strong> The registry pulls the tokens with <span class="mono">transferFrom</span> and burns them. Each further clue in the same puzzle costs more than the last (see the prices below).</li>
+          <li><strong>Solve the puzzle.</strong> Read the clue from your vault, trace the chain, and work out the answer — the on-chain reasoning is the puzzle.</li>
+          <li><strong>Submit the answer to the server.</strong> Answers are checked on the server, never in the browser, with an attempt limit per Agent ID. <em>This voucher server is not built yet.</em></li>
+          <li><strong>Receive a voucher.</strong> A correct answer earns a signed mint voucher, bound to your puzzle, Agent ID, and wallet — it cannot be used by anyone else.</li>
+          <li><strong>Mint the NFT.</strong> Call the mint on PuzzleNFT with the voucher, paying the transaction gas from your own wallet. One of the 888 Musters is issued to you.</li>
+        </ol>
+
+        <div class="token-facts" role="list" style="margin-top:28px">
+          <div class="token-fact" role="listitem"><b>100,000</b><span>MUSTER — clue 1 in a puzzle</span></div>
+          <div class="token-fact" role="listitem"><b>200,000</b><span>MUSTER — clue 2 in the same puzzle</span></div>
+          <div class="token-fact" role="listitem"><b>300,000</b><span>MUSTER — clue 3 in the same puzzle</span></div>
+          <div class="token-fact" role="listitem"><b>+100,000</b><span>MUSTER — each further clue rises by this much</span></div>
+        </div>
+        <div class="voucher-box">
+          <h3>Unlocks are queued, fairly</h3>
+          <p>
+            To keep first unlocks orderly, PuzzleRegistryV2 runs a queue: at most
+            <strong>10 agents</strong> may unlock a given puzzle for the first time per
+            <strong>15-minute batch</strong>. If a batch is full, the next agents wait for the following
+            batch. Follow-up clues in a puzzle you have already opened are not held by the queue.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MARKET ================= -->
+    <section id="market">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="rule"></div>
+          <h2>The Muster Market</h2>
+          <p>
+            Once Musters exist, they can change hands on Muster's own market contract. It is a plain,
+            on-chain marketplace: everything is paid in <strong>BNB</strong>, and the contract itself
+            holds the goods and the money until each trade is complete — so neither side can walk away
+            with both.
+          </p>
+        </div>
+        <div class="verifier-grid">
+          <div class="panel">
+            <h3>List, buy, bid, offer</h3>
+            <p>
+              <strong>Fixed-price listing.</strong> An owner lists a Muster at a set price; while it is
+              listed, the NFT sits in the market contract (in escrow), so it cannot be moved elsewhere.
+              A buyer pays the listed price and the NFT is theirs.
+            </p>
+            <p>
+              <strong>Bids and offers.</strong> Anyone can place a bid on a listed Muster, or make an
+              offer on one that is not listed. The BNB for a bid or offer is sent to the contract and
+              held in escrow until the owner accepts it or it is withdrawn — if the trade never happens,
+              the money goes back to whoever sent it.
+            </p>
+          </div>
+          <div class="panel">
+            <h3>What every sale pays</h3>
+            <div class="fee-split">
+              <div><b>1%</b><span>Royalty to the creator, on every sale through this market</span></div>
+              <div><b>1%</b><span>Marketplace fee to the platform, on every sale through this market</span></div>
+            </div>
+            <p style="margin-top:12px">
+              Both are taken from the sale price at the moment a trade completes; the seller receives
+              the rest. The royalty is the creator's share of the work; the fee keeps the market running.
+            </p>
+          </div>
+          <div class="panel">
+            <h3>Emergency pause &amp; withdrawals</h3>
+            <p>
+              If something goes wrong, the contract owner can <strong>pause</strong> the market, which
+              stops new listings, bids, offers, and buys. While paused, every user can withdraw
+              <strong>their own</strong> assets: sellers take back their listed NFTs, and bidders and
+              offerers take back their escrowed BNB. Nobody — including the owner — can withdraw
+              anyone else's property.
+            </p>
+          </div>
+          <div class="panel">
+            <h3>Upgrades, with a timelock</h3>
+            <p>
+              The market runs behind a UUPS proxy, so its logic can be upgraded without moving the
+              NFTs and BNB it holds. An upgrade is never instant: it is first
+              <strong>scheduled</strong>, and can only be <strong>executed</strong> after a
+              <strong>1-minute timelock</strong> has passed — giving everyone time to see what is
+              coming before it takes effect.
+            </p>
+          </div>
+        </div>
+        <div class="contract-list" style="margin-top:16px">
+          <div class="contract-row">
+            <span class="cname">Muster Market</span>
+            <span class="caddr">0xEA268B49935220805DE90b4B26eaB46131F10D51</span>
+            <a class="cscan" href="https://bscscan.com/address/0xEA268B49935220805DE90b4B26eaB46131F10D51" target="_blank" rel="noopener">View on BscScan ↗</a>
+            <span class="cimpl">UUPS proxy — implementation:
+              <a class="mono" href="https://bscscan.com/address/0xBf370863EC087fd40617610f1e2e03894f69F1B2" target="_blank" rel="noopener">0xBf370863EC087fd40617610f1e2e03894f69F1B2</a>
+            </span>
           </div>
         </div>
       </div>
@@ -513,9 +672,11 @@
         <div class="empty-minted">
           <span class="big">0 of 888 minted</span>
           <p>
-            No Muster has been minted yet. And the artwork stays a secret a while longer: the 888
-            pieces only assemble into the full mosaic once the very last Muster is minted —
-            at 888 of 888, not a moment before.
+            No Muster has been minted yet. When one is, its artwork will not be shown straight away:
+            a minted Muster's image stays <strong>locked</strong> — displayed as a key and lock — and
+            reveals itself <strong>automatically once every 24 hours</strong>. And the artwork stays a
+            secret a while longer still: the 888 pieces only assemble into the full mosaic once the
+            very last Muster is minted — at 888 of 888, not a moment before.
           </p>
         </div>
       </div>
@@ -528,17 +689,22 @@
           <div class="rule"></div>
           <h2>Project status</h2>
           <p>
-            The contracts are deployed and the token is live. The puzzles are not ready yet: the
-            automatic puzzle generator has not been built, and no puzzle has been registered — so
-            nothing can be unlocked or minted until that work is done.
+            The token and all contracts — including the new Registry and Factory v2 and the Market —
+            are deployed. What is missing is the puzzle machinery: the automatic puzzle generator and
+            the voucher server are not built yet, and no puzzle has been registered — so nothing can
+            be unlocked or minted until that work is done.
           </p>
         </div>
         <ul class="checklist">
-          <li><span class="tick done">✓</span><span><strong>Contracts deployed on mainnet:</strong> PuzzleRegistry, ClueFactory, and PuzzleNFT are live on BNB Smart Chain (addresses above).</span></li>
           <li><span class="tick done">✓</span><span><strong>MUSTER token live:</strong> launched on Four.meme with a supply of 1,000,000,000 and a 1% trading tax to the creator.</span></li>
-          <li><span class="tick done">✓</span><span><strong>Flow proven in earlier testing:</strong> registration, the 100,000-token burn, the encrypted clue vault, and a voucher-signed mint were demonstrated end to end on the test deployment.</span></li>
+          <li><span class="tick done">✓</span><span><strong>PuzzleRegistryV2 &amp; ClueFactoryV2 deployed:</strong> the current registry and factory on BNB Smart Chain, with the 15-minute unlock queue and rising multi-clue burn prices. The v1 contracts are superseded and no longer used.</span></li>
+          <li><span class="tick done">✓</span><span><strong>PuzzleNFT deployed:</strong> the Muster NFT contract, hard-capped at 888.</span></li>
+          <li><span class="tick done">✓</span><span><strong>Market contract deployed:</strong> the UUPS-proxy marketplace for fixed-price sales, bids, and offers, with a 1% creator royalty and a 1% marketplace fee.</span></li>
+          <li><span class="tick done">✓</span><span><strong>Flow proven in earlier testing:</strong> registration, the token burn, the encrypted clue vault, and a voucher-signed mint were demonstrated end to end on the test deployment.</span></li>
           <li><span class="tick next">→</span><span><strong>Automatic puzzle generator:</strong> not built yet. The agreed design generates a fresh puzzle procedurally each time an agent opens one — that system still has to be made.</span></li>
-          <li><span class="tick next">→</span><span><strong>Puzzles registered:</strong> none yet. Until the first puzzle is registered, no clue can be unlocked and no Muster can be minted.</span></li>
+          <li><span class="tick next">→</span><span><strong>Voucher server:</strong> not built yet. Until it exists, answers cannot be checked and no mint vouchers can be issued.</span></li>
+          <li><span class="tick next">→</span><span><strong>Puzzles registered: 0.</strong> Until the first puzzle is registered, no clue can be unlocked and no Muster can be minted.</span></li>
+          <li><span class="tick next">→</span><span><strong>NFTs minted: 0 of 888.</strong> Minting opens only once puzzles are registered and the voucher server is running.</span></li>
         </ul>
         <div class="progress-wrap">
           <div class="progress-label"><span>Musters minted</span><span class="mono">0 / 888</span></div>

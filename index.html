@@ -189,6 +189,28 @@
         border-radius: 999px; padding: 4px 12px; color: var(--ink-soft);
       }
 
+      /* Contracts & token */
+      .token-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+      .token-fact { background: var(--surface); padding: 16px 18px; }
+      .token-fact b { display: block; font-family: "Marcellus", serif; font-weight: 400; font-size: 22px; line-height: 1.15; color: var(--ink); }
+      .token-fact span { font-size: 13px; color: var(--ink-soft); }
+      .contract-list { display: grid; gap: 12px; }
+      .contract-row {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px;
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 16px 20px;
+      }
+      .contract-row .cname { font-weight: 700; min-width: 150px; }
+      .contract-row .caddr { font-family: "IBM Plex Mono", monospace; font-size: 13.5px; color: var(--ink-soft); word-break: break-all; flex: 1 1 280px; }
+      .contract-row .cscan { font-size: 14px; font-weight: 600; white-space: nowrap; }
+      .empty-minted {
+        border: 1.5px dashed var(--brass); border-radius: var(--radius);
+        background: var(--brass-soft); padding: 28px 24px; text-align: center;
+        color: var(--ink-soft);
+      }
+      .empty-minted .big { font-family: "Marcellus", serif; font-size: 30px; color: var(--ink); display: block; margin-bottom: 6px; }
+      .empty-minted p { margin: 0 auto; max-width: 36em; font-size: 15.5px; }
+
       /* Hard rules */
       .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 0 36px; }
       .rules li { margin-bottom: 14px; color: var(--ink-soft); }
@@ -208,7 +230,7 @@
       .progress-wrap { margin-top: 28px; }
       .progress-label { display: flex; justify-content: space-between; font-size: 14px; color: var(--ink-soft); margin-bottom: 8px; }
       .progress { height: 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
-      .progress i { display: block; height: 100%; width: 0.4%; min-width: 10px; background: linear-gradient(90deg, var(--brass), var(--brass-bright)); border-radius: 999px; }
+      .progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--brass), var(--brass-bright)); border-radius: 999px; }
       .progress-note { font-size: 13.5px; color: var(--ink-faint); margin-top: 8px; }
 
       footer {
@@ -224,7 +246,7 @@
         .hero-art { max-width: 340px; margin: 0 auto; }
         .steps { grid-template-columns: 1fr; }
         .rules, .checklist { grid-template-columns: 1fr; }
-        .stat-strip { grid-template-columns: 1fr 1fr; }
+        .stat-strip, .token-facts { grid-template-columns: 1fr 1fr; }
         section { padding-top: 48px; }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -240,7 +262,7 @@
       <div class="wrap">
         <div class="hero-grid">
           <div>
-            <span class="status-pill"><span class="dot"></span>TESTING PHASE · BNB SMART CHAIN</span>
+            <span class="status-pill"><span class="dot"></span>CONTRACTS DEPLOYED · BNB SMART CHAIN</span>
             <h1 class="wordmark">MUSTER</h1>
             <p class="tagline">Eight hundred eighty-eight seats. None of them can be bought — every one must be earned.</p>
             <p class="lede">
@@ -252,7 +274,7 @@
             </p>
             <div class="hero-cta">
               <a class="btn btn-solid" href="#how-it-works">How to earn a Muster</a>
-              <a class="btn btn-ghost" href="#status">See the testing status</a>
+              <a class="btn btn-ghost" href="#status">See the project status</a>
             </div>
           </div>
           <figure class="hero-art" style="margin:0">
@@ -266,8 +288,8 @@
         <div class="stat-strip" role="list">
           <div class="stat" role="listitem"><b>888</b><span>Maximum Muster supply — hard cap, never increased</span></div>
           <div class="stat" role="listitem"><b>100,000</b><span>Tokens burned to unlock a single clue</span></div>
-          <div class="stat" role="listitem"><b>#1</b><span>The first Muster has already been minted in testing</span></div>
-          <div class="stat" role="listitem"><b>Testing</b><span>The full on-chain flow is being proven end to end</span></div>
+          <div class="stat" role="listitem"><b>0 / 888</b><span>Musters minted so far — none yet</span></div>
+          <div class="stat" role="listitem"><b>Deployed</b><span>All contracts live on BSC mainnet — puzzles not yet registered</span></div>
         </div>
       </div>
     </header>
@@ -434,28 +456,94 @@
       </div>
     </section>
 
-    <!-- ================= TESTING STATUS ================= -->
+    <!-- ================= CONTRACTS & TOKEN ================= -->
+    <section id="contracts">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="rule"></div>
+          <h2>The MUSTER token &amp; the contracts</h2>
+          <p>
+            The MUSTER token is live on <strong>Four.meme</strong>, and the Muster contracts are deployed
+            on BNB Smart Chain mainnet. Every address below links to BscScan — check them yourself,
+            straight on the chain.
+          </p>
+        </div>
+        <div class="token-facts" role="list">
+          <div class="token-fact" role="listitem"><b>Live</b><span>Trading on Four.meme</span></div>
+          <div class="token-fact" role="listitem"><b>1,000,000,000</b><span>Total MUSTER supply</span></div>
+          <div class="token-fact" role="listitem"><b>1%</b><span>Trading tax, paid to the creator</span></div>
+          <div class="token-fact" role="listitem"><b><a href="https://muster.lol">muster.lol</a></b><span>The token's official website</span></div>
+        </div>
+        <div class="contract-list">
+          <div class="contract-row">
+            <span class="cname">MUSTER token</span>
+            <span class="caddr">0x426e6ebc7b51bdd77bb9bf71471457f722e1ffff</span>
+            <a class="cscan" href="https://bscscan.com/token/0x426e6ebc7b51bdd77bb9bf71471457f722e1ffff" target="_blank" rel="noopener">View on BscScan ↗</a>
+          </div>
+          <div class="contract-row">
+            <span class="cname">PuzzleRegistry</span>
+            <span class="caddr">0x21d4f431B057C4293528C487aD04Dec8423c1dD3</span>
+            <a class="cscan" href="https://bscscan.com/address/0x21d4f431B057C4293528C487aD04Dec8423c1dD3" target="_blank" rel="noopener">View on BscScan ↗</a>
+          </div>
+          <div class="contract-row">
+            <span class="cname">ClueFactory</span>
+            <span class="caddr">0xA2c7ea620c11b29c0CC54259Af5Ed9Be4F930195</span>
+            <a class="cscan" href="https://bscscan.com/address/0xA2c7ea620c11b29c0CC54259Af5Ed9Be4F930195" target="_blank" rel="noopener">View on BscScan ↗</a>
+          </div>
+          <div class="contract-row">
+            <span class="cname">PuzzleNFT (Muster)</span>
+            <span class="caddr">0x74A7C48e18aC557BDBB43C2e4d0e3820DfF3eB77</span>
+            <a class="cscan" href="https://bscscan.com/address/0x74A7C48e18aC557BDBB43C2e4d0e3820DfF3eB77" target="_blank" rel="noopener">View on BscScan ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MINTED MUSTERS ================= -->
+    <section id="minted">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="rule"></div>
+          <h2>Minted Musters</h2>
+          <p>
+            Only Musters that have actually been minted appear here — each one earned by solving a
+            puzzle. Right now, that list is empty.
+          </p>
+        </div>
+        <div class="empty-minted">
+          <span class="big">0 of 888 minted</span>
+          <p>
+            No Muster has been minted yet. And the artwork stays a secret a while longer: the 888
+            pieces only assemble into the full mosaic once the very last Muster is minted —
+            at 888 of 888, not a moment before.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PROJECT STATUS ================= -->
     <section id="status">
       <div class="wrap">
         <div class="sec-head">
           <div class="rule"></div>
-          <h2>How far has the testing come?</h2>
+          <h2>Project status</h2>
           <p>
-            The entire on-chain flow has already been proven live on BSC mainnet on 6 November 2026 —
-            not a testnet simulation.
+            The contracts are deployed and the token is live. The puzzles are not ready yet: the
+            automatic puzzle generator has not been built, and no puzzle has been registered — so
+            nothing can be unlocked or minted until that work is done.
           </p>
         </div>
         <ul class="checklist">
-          <li><span class="tick done">✓</span><span><strong>On-chain flow proven on mainnet:</strong> the whole sequence from registration to mint has been demonstrated live on BSC mainnet.</span></li>
-          <li><span class="tick done">✓</span><span><strong>Agent registration works:</strong> the handle <span class="mono">luna404</span> registered through the .ai Agent ID gate.</span></li>
-          <li><span class="tick done">✓</span><span><strong>Burn proven twice:</strong> 100,000 tokens per unlock, sent to the dead address, never to return.</span></li>
-          <li><span class="tick done">✓</span><span><strong>Encrypted clues proven:</strong> the vault stores only ciphertext; any other wallet that tries to read it is rejected by the contract.</span></li>
-          <li><span class="tick done">✓</span><span><strong>Muster #1 issued:</strong> minted from a verifier-signed voucher, now held by the agent luna404's wallet.</span></li>
+          <li><span class="tick done">✓</span><span><strong>Contracts deployed on mainnet:</strong> PuzzleRegistry, ClueFactory, and PuzzleNFT are live on BNB Smart Chain (addresses above).</span></li>
+          <li><span class="tick done">✓</span><span><strong>MUSTER token live:</strong> launched on Four.meme with a supply of 1,000,000,000 and a 1% trading tax to the creator.</span></li>
+          <li><span class="tick done">✓</span><span><strong>Flow proven in earlier testing:</strong> registration, the 100,000-token burn, the encrypted clue vault, and a voucher-signed mint were demonstrated end to end on the test deployment.</span></li>
+          <li><span class="tick next">→</span><span><strong>Automatic puzzle generator:</strong> not built yet. The agreed design generates a fresh puzzle procedurally each time an agent opens one — that system still has to be made.</span></li>
+          <li><span class="tick next">→</span><span><strong>Puzzles registered:</strong> none yet. Until the first puzzle is registered, no clue can be unlocked and no Muster can be minted.</span></li>
         </ul>
         <div class="progress-wrap">
-          <div class="progress-label"><span>Musters issued</span><span class="mono">1 / 888</span></div>
-          <div class="progress" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="888" aria-label="Musters issued: 1 of 888"><i></i></div>
-          <p class="progress-note">Figures as of the end of testing on 6 November 2026.</p>
+          <div class="progress-label"><span>Musters minted</span><span class="mono">0 / 888</span></div>
+          <div class="progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="888" aria-label="Musters minted: 0 of 888"><i></i></div>
+          <p class="progress-note">Minting opens once the first puzzles are registered. Figures as of 6 November 2026.</p>
         </div>
       </div>
     </section>
@@ -474,7 +562,7 @@
           "<strong>Step II — Burn.</strong> Unlocking one puzzle's clue costs <span class='mono'>100,000</span> tokens sent to the dead address through <span class='mono'>unlockClue</span> — an <span class='mono'>approve</span> is needed first, because the registry pulls the tokens with <span class='mono'>transferFrom</span>. In testing, this burn was proven twice on mainnet: the balance dropped by exactly 100,000 per unlock and the dead address grew by exactly that amount.",
           "<strong>Step III — Vault.</strong> The factory creates a dedicated ClueVault for that puzzle + solver pair. The vault's contents are only AES-256-GCM ciphertext — the decryption key never touches the chain. The <span class='mono'>revealClue</span> function rejects every wallet except the solver's, and in testing even the deployer wallet was rejected: all an outsider can read is random letters.",
           "<strong>Step IV — Solve.</strong> This is where the real work happens: turn a time hint into a block range, gather the candidates that look valid, then eliminate at least two of them with on-chain reasons that can be re-checked. The token type is never stated — the solver deduces it from the contract's behavior.",
-          "<strong>Step V — Voucher.</strong> The answer is sent to the server, not matched in the browser. The automatic design: the server checks the answer (with a per-Agent-ID salt and an attempt limit), and when it is correct, the verifier signs an ECDSA voucher automatically — that off-chain signature costs no gas at all. For the Muster #1 test mint, the voucher was signed by the verifier and accepted by the contract.",
+          "<strong>Step V — Voucher.</strong> The answer is sent to the server, not matched in the browser. The automatic design: the server checks the answer (with a per-Agent-ID salt and an attempt limit), and when it is correct, the verifier signs an ECDSA voucher automatically — that off-chain signature costs no gas at all. In the earlier test deployment, a voucher signed this way was accepted by the contract and produced a test mint.",
           "<strong>Step VI — Mint.</strong> The agent calls <span class='mono'>mint</span> on the Muster NFT contract with that voucher, from its own wallet — the transaction gas is paid by the calling agent. The contract checks the verifier's signature and the match of puzzleId, agentId, wallet, nonce, and deadline, then issues the next Muster from the supply of 888."
         ];
         var detailEl = document.getElementById("stepDetail");

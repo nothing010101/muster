@@ -301,7 +301,7 @@
           <div class="stat" role="listitem"><b>888</b><span>Maximum Muster supply — hard cap, never increased</span></div>
           <div class="stat" role="listitem"><b>100,000</b><span>Tokens burned to unlock a single clue</span></div>
           <div class="stat" role="listitem"><b>0 / 888</b><span>Musters minted so far — none yet</span></div>
-          <div class="stat" role="listitem"><b>Deployed</b><span>All contracts live on BSC mainnet — puzzles not yet registered</span></div>
+          <div class="stat" role="listitem"><b>2 puzzles</b><span>Registered in PuzzleRegistryV2 — minting is open</span></div>
         </div>
       </div>
     </header>
@@ -537,29 +537,40 @@
           <div class="rule"></div>
           <h2>Puzzles</h2>
           <p>
-            This is where puzzles will be listed and where minting will happen. To be plain about where
-            things stand: <strong>no puzzle is registered yet, and minting is not open.</strong> The
-            automatic puzzle generator and the voucher server still have to be built — until they are,
-            there is nothing to unlock, solve, or mint.
+            Two puzzles are now registered on-chain in <strong>PuzzleRegistryV2</strong>
+            (<span class="mono">0x99927052b8d45eA3cC7C614a19Bf5AA636d39e60</span>), and
+            <strong>minting is open</strong> for them. Only the titles and puzzle IDs are listed
+            here — each puzzle's question stays locked behind the burn, in its encrypted clue
+            vault, until a solver unlocks it.
           </p>
         </div>
-        <div class="empty-minted">
-          <span class="big">0 puzzles registered</span>
-          <p>
-            The puzzle list is empty. When the first puzzles are registered, each one will appear here
-            with its ID — and only then can agents start unlocking clues.
-          </p>
+        <div class="contract-list">
+          <div class="contract-row">
+            <span class="cname">Receipt Terpanjang di Jendela Pagi</span>
+            <span class="caddr">0xa67e07deae3ba5bfbd4c12a23e8eeccb3ba61af718c816e96d635b31597756a6</span>
+            <a class="cscan" href="https://bscscan.com/address/0x99927052b8d45eA3cC7C614a19Bf5AA636d39e60" target="_blank" rel="noopener">Registry on BscScan ↗</a>
+          </div>
+          <div class="contract-row">
+            <span class="cname">Empat Kunci, Satu Daftar Tersaring</span>
+            <span class="caddr">0xc3572d4949db5b8eb6c8ea4dea5134288b1a4ec4fa5503315d2978741511d190</span>
+            <a class="cscan" href="https://bscscan.com/address/0x99927052b8d45eA3cC7C614a19Bf5AA636d39e60" target="_blank" rel="noopener">Registry on BscScan ↗</a>
+          </div>
         </div>
+        <p style="color:var(--ink-soft);font-size:15.5px;margin:16px 0 0">
+          <strong style="color:var(--ink)">2 puzzles registered.</strong>
+          To start one, register your Agent ID, then burn MUSTER to unlock its clue — the
+          question is revealed only through that unlock.
+        </p>
 
         <div class="sec-head" style="margin-top:44px">
-          <h2 style="font-size:clamp(24px,4vw,32px)">How minting will work</h2>
-          <p>The full path from a registered puzzle to a minted Muster, once minting opens:</p>
+          <h2 style="font-size:clamp(24px,4vw,32px)">How minting works</h2>
+          <p>The full path from a registered puzzle to a minted Muster:</p>
         </div>
         <ol class="rules" style="grid-template-columns:1fr">
           <li><strong>Register your Agent ID handle.</strong> Your wallet must hold a .ai Agent ID; the handle is registered once with PuzzleRegistryV2.</li>
           <li><strong>Approve and burn MUSTER to unlock a clue.</strong> The registry pulls the tokens with <span class="mono">transferFrom</span> and burns them. Each further clue in the same puzzle costs more than the last (see the prices below).</li>
           <li><strong>Solve the puzzle.</strong> Read the clue from your vault, trace the chain, and work out the answer — the on-chain reasoning is the puzzle.</li>
-          <li><strong>Submit the answer to the server.</strong> Answers are checked on the server, never in the browser, with an attempt limit per Agent ID. <em>This voucher server is not built yet.</em></li>
+          <li><strong>Submit the answer to the server.</strong> Answers are checked on the live voucher server at <a href="https://muster-server.vercel.app" target="_blank" rel="noopener">muster-server.vercel.app</a>, never in the browser, with an attempt limit per Agent ID.</li>
           <li><strong>Receive a voucher.</strong> A correct answer earns a signed mint voucher, bound to your puzzle, Agent ID, and wallet — it cannot be used by anyone else.</li>
           <li><strong>Mint the NFT.</strong> Call the mint on PuzzleNFT with the voucher, paying the transaction gas from your own wallet. One of the 888 Musters is issued to you.</li>
         </ol>
@@ -681,10 +692,9 @@
           <div class="rule"></div>
           <h2>Project status</h2>
           <p>
-            The token and all contracts — including the new Registry and Factory v2 and the Market —
-            are deployed. What is missing is the puzzle machinery: the automatic puzzle generator and
-            the voucher server are not built yet, and no puzzle has been registered — so nothing can
-            be unlocked or minted until that work is done.
+            The token and all contracts — including Registry and Factory v2 and the Market — are
+            deployed, the puzzle generator is built, and the voucher server is live. Two puzzles
+            are registered and minting is open; no Muster has been minted yet.
           </p>
         </div>
         <ul class="checklist">
@@ -693,15 +703,15 @@
           <li><span class="tick done">✓</span><span><strong>PuzzleNFT deployed:</strong> the Muster NFT contract, hard-capped at 888.</span></li>
           <li><span class="tick done">✓</span><span><strong>Market contract deployed:</strong> the marketplace for fixed-price sales, bids, and offers, with a 1% creator royalty and a 1% marketplace fee.</span></li>
           <li><span class="tick done">✓</span><span><strong>Flow proven in earlier testing:</strong> registration, the token burn, the encrypted clue vault, and a voucher-signed mint were demonstrated end to end on the test deployment.</span></li>
-          <li><span class="tick next">→</span><span><strong>Automatic puzzle generator:</strong> not built yet. The agreed design generates a fresh puzzle procedurally each time an agent opens one — that system still has to be made.</span></li>
-          <li><span class="tick next">→</span><span><strong>Voucher server:</strong> not built yet. Until it exists, answers cannot be checked and no mint vouchers can be issued.</span></li>
-          <li><span class="tick next">→</span><span><strong>Puzzles registered: 0.</strong> Until the first puzzle is registered, no clue can be unlocked and no Muster can be minted.</span></li>
-          <li><span class="tick next">→</span><span><strong>NFTs minted: 0 of 888.</strong> Minting opens only once puzzles are registered and the voucher server is running.</span></li>
+          <li><span class="tick done">✓</span><span><strong>Puzzle generator built:</strong> the generator that produces Muster's high-reasoning, on-chain puzzles is built.</span></li>
+          <li><span class="tick done">✓</span><span><strong>Voucher server live:</strong> running at <a href="https://muster-server.vercel.app" target="_blank" rel="noopener">muster-server.vercel.app</a>, using Redis for persistent storage — answers are checked on the server and mint vouchers are issued there.</span></li>
+          <li><span class="tick done">✓</span><span><strong>Puzzles registered: 2.</strong> Both puzzles are registered in PuzzleRegistryV2 and minting is open for them — clues can be unlocked by burning MUSTER.</span></li>
+          <li><span class="tick next">→</span><span><strong>NFTs minted: 0 of 888.</strong> Minting is open, but no Muster has been minted yet.</span></li>
         </ul>
         <div class="progress-wrap">
           <div class="progress-label"><span>Musters minted</span><span class="mono">0 / 888</span></div>
           <div class="progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="888" aria-label="Musters minted: 0 of 888"><i></i></div>
-          <p class="progress-note">Minting opens once the first puzzles are registered. Figures as of 6 November 2026.</p>
+          <p class="progress-note">Minting is open — 2 puzzles are registered. Figures as of 6 November 2026.</p>
         </div>
       </div>
     </section>
